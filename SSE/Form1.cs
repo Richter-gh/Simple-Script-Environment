@@ -10,11 +10,19 @@ using System.Windows.Forms;
 
 namespace SSE
 {
-    public partial class Form1 : Form
+    public partial class MainForm : Form
     {
-        public Form1()
+        public MainForm()
         {
             InitializeComponent();
+        }
+
+        private SSE.Settings.MySettings Settings;
+        private void SettingsButton_Click(object sender, EventArgs e)
+        {
+            SettingsForm stfrm = new SettingsForm();
+            if (stfrm.ShowDialog() == DialogResult.OK)
+                Settings = stfrm.GetSettings();
         }
     }
 }

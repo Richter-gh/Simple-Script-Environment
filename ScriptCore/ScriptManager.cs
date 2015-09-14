@@ -6,7 +6,6 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using System.Windows.Forms;
 
 namespace ScriptCore
 {
@@ -16,26 +15,33 @@ namespace ScriptCore
         public string FileName;
         public bool Run;
     }
+
     public class ScriptManager
     {
         private List<ExecutableScript> _scripts;
+        public string ErrorMessage;
 
-        public ScriptManager(IDictionary<string,bool> scripts)
+        public ScriptManager(IDictionary<string, bool> scripts)
         {
             _scripts = new List<ExecutableScript>();
             string messages = "";
             foreach (var elem in scripts)
             {
                 string temp;
-                if (!Add(elem.Key, elem.Value,out temp))
+                if (!Add(elem.Key, elem.Value, out temp))
                 {
                     messages += temp + "\n";
                 }
             }
             if (messages.Length > 0)
             {
-                MessageBox.Show(messages);
+                ErrorMessage = messages;
             }
+        }
+
+        public ScriptManager()
+        {
+            _scripts = new List<ExecutableScript>();
         }
 
         public bool Add(string file, bool run, out string message)
@@ -44,8 +50,8 @@ namespace ScriptCore
             try
             {
                 compiled = (from type in Compile(file).GetTypes()
-                    where type.GetInterfaces().Contains(typeof (IExecutable))
-                    select (IExecutable) Activator.CreateInstance(type)).SingleOrDefault();
+                            where type.GetInterfaces().Contains(typeof(IExecutable))
+                            select (IExecutable)Activator.CreateInstance(type)).SingleOrDefault();
             }
             catch (NullReferenceException e)
             {
@@ -69,9 +75,10 @@ namespace ScriptCore
                 return false;
             }
         }
+
         public bool Remove(string file)
         {
-            var removable = _scripts.FirstOrDefault(x => x.FileName == file);
+            var removable = _scripts.SingleOrDefault(x => x.FileName == file);
             if (removable != null)
             {
                 _scripts.Remove(removable);
@@ -79,6 +86,7 @@ namespace ScriptCore
             }
             return false;
         }
+
         public void Execute()
         {
             lock (_scripts)
@@ -96,16 +104,25 @@ namespace ScriptCore
             if (fileName == null) throw new ArgumentNullException(nameof(fileName));
             CodeDomProvider provider;
             bool fromFile = true;
-            var fileInfo = new FileInfo(fileName);
-            if (fileInfo.Extension.ToLower(CultureInfo.InvariantCulture) == ".cs")
-                provider = CodeDomProvider.CreateProvider("CSharp");
-            else if (fileInfo.Extension == "")
+            FileInfo fileInfo;
+            try
+            {
+                fileInfo = new FileInfo(fileName);
+                if (fileInfo.Extension.ToLower(CultureInfo.InvariantCulture) == ".cs")
+                    provider = CodeDomProvider.CreateProvider("CSharp");
+                else if (fileInfo.Extension == "")
+                {
+                    provider = CodeDomProvider.CreateProvider("CSharp");
+                    fromFile = false;
+                }
+                else
+                    return null;
+            }
+            catch (ArgumentException e)
             {
                 provider = CodeDomProvider.CreateProvider("CSharp");
                 fromFile = false;
             }
-            else
-                return null;
             if (provider != null)
             {
                 var compilerParameters = new CompilerParameters
@@ -113,10 +130,11 @@ namespace ScriptCore
                     GenerateInMemory = true,
                     GenerateExecutable = false
                 };
+                compilerParameters.ReferencedAssemblies.Add("ScriptCore.dll");
                 CompilerResults compilerResults;
                 try
                 {
-                    if(fromFile)
+                    if (fromFile)
                         compilerResults = provider.CompileAssemblyFromFile(
                         compilerParameters, fileName);
                     else
@@ -124,15 +142,14 @@ namespace ScriptCore
                             compilerParameters, fileName);
                     if (compilerResults.Errors.Count != 0)
                     {
+                        //MessageBox.Show(compilerResults.Errors[0].ToString());
                         return null;
                     }
                     return compilerResults.CompiledAssembly;
                 }
                 catch (Exception e)
                 {
-
                 }
-
             }
             return null;
         }

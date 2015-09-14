@@ -5,6 +5,7 @@
         string Author { get; }
         string Name { get; }
         string Version { get; }
+
         void Execute();
     }
 }

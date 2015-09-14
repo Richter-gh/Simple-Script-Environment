@@ -4,11 +4,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("SSEBase")]
+[assembly: AssemblyTitle("ScriptCoreTests2")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("SSEBase")]
+[assembly: AssemblyProduct("ScriptCoreTests2")]
 [assembly: AssemblyCopyright("Copyright ©  2015")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -19,7 +19,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("d6617ce2-3da1-4148-a449-e298d4e9a4a0")]
+[assembly: Guid("12763ced-ec46-47e4-a3ea-30df64115301")]
 
 // Version information for an assembly consists of the following four values:
 //

@@ -7,6 +7,7 @@ namespace SSE.Settings
     {
         public bool minimizedStart;
     }
+
     public class AppSettings<T> where T : new()
     {
         private const string DEFAULT_FILENAME = "settings.jsn";

@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Windows.Forms;
 using SSE.Settings;
+
 namespace SSE
 {
-
     public partial class SettingsForm : Form
     {
         private MySettings settings;
@@ -31,5 +31,4 @@ namespace SSE
             settings = MySettings.Load();
         }
     }
-
 }

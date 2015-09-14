@@ -6,6 +6,8 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using System.Windows.Forms;
+
 namespace ScriptCore
 {
     public class ExecutableScript
@@ -21,39 +23,51 @@ namespace ScriptCore
         public ScriptManager(IDictionary<string,bool> scripts)
         {
             _scripts = new List<ExecutableScript>();
+            string messages = "";
             foreach (var elem in scripts)
             {
-                var compiled = (from type in Compile(elem.Key).GetTypes()
-                                where type.GetInterfaces().Contains(typeof (IExecutable))
-                                select (IExecutable) Activator.CreateInstance(type)).SingleOrDefault();
-                if (compiled != null)
-                    _scripts.Add(
-                        new ExecutableScript
-                        {
-                            Script = compiled,
-                            FileName = elem.Key,
-                            Run = elem.Value
-                        });
+                string temp;
+                if (!Add(elem.Key, elem.Value,out temp))
+                {
+                    messages += temp + "\n";
+                }
+            }
+            if (messages.Length > 0)
+            {
+                MessageBox.Show(messages);
             }
         }
 
-        public bool Add(string file, bool run)
+        public bool Add(string file, bool run, out string message)
         {
-            var compiled = (from type in Compile(file).GetTypes()
-                            where type.GetInterfaces().Contains(typeof(IExecutable))
-                            select (IExecutable)Activator.CreateInstance(type)).SingleOrDefault();
+            IExecutable compiled;
+            try
+            {
+                compiled = (from type in Compile(file).GetTypes()
+                    where type.GetInterfaces().Contains(typeof (IExecutable))
+                    select (IExecutable) Activator.CreateInstance(type)).SingleOrDefault();
+            }
+            catch (NullReferenceException e)
+            {
+                compiled = null;
+            }
             if (compiled != null)
             {
                 _scripts.Add(
-                      new ExecutableScript
-                      {
-                          Script = compiled,
-                          FileName = file,
-                          Run = run
-                      });
+                    new ExecutableScript
+                    {
+                        Script = compiled,
+                        FileName = file,
+                        Run = run
+                    });
+                message = "";
                 return true;
             }
-            return false;
+            else
+            {
+                message = string.Format("{0} did not compile", file);
+                return false;
+            }
         }
         public bool Remove(string file)
         {
@@ -79,12 +93,19 @@ namespace ScriptCore
 
         private Assembly Compile(string fileName)
         {
+            if (fileName == null) throw new ArgumentNullException(nameof(fileName));
             CodeDomProvider provider;
+            bool fromFile = true;
             var fileInfo = new FileInfo(fileName);
             if (fileInfo.Extension.ToLower(CultureInfo.InvariantCulture) == ".cs")
                 provider = CodeDomProvider.CreateProvider("CSharp");
+            else if (fileInfo.Extension == "")
+            {
+                provider = CodeDomProvider.CreateProvider("CSharp");
+                fromFile = false;
+            }
             else
-                throw new Exception("Unsupported extension of script");
+                return null;
             if (provider != null)
             {
                 var compilerParameters = new CompilerParameters
@@ -92,11 +113,26 @@ namespace ScriptCore
                     GenerateInMemory = true,
                     GenerateExecutable = false
                 };
-                var compilerResults = provider.CompileAssemblyFromFile(
-                    compilerParameters, fileName);
-                if (compilerResults.Errors.Count != 0)
-                    throw new Exception(string.Format("{0} did not compile", fileName));
-                return compilerResults.CompiledAssembly;
+                CompilerResults compilerResults;
+                try
+                {
+                    if(fromFile)
+                        compilerResults = provider.CompileAssemblyFromFile(
+                        compilerParameters, fileName);
+                    else
+                        compilerResults = provider.CompileAssemblyFromSource(
+                            compilerParameters, fileName);
+                    if (compilerResults.Errors.Count != 0)
+                    {
+                        return null;
+                    }
+                    return compilerResults.CompiledAssembly;
+                }
+                catch (Exception e)
+                {
+
+                }
+
             }
             return null;
         }

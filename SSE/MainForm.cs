@@ -17,12 +17,22 @@ namespace SSE
             InitializeComponent();
         }
 
-        private SSE.Settings.MySettings Settings;
+        private Settings.MySettings Settings;
         private void SettingsButton_Click(object sender, EventArgs e)
         {
             SettingsForm stfrm = new SettingsForm();
             if (stfrm.ShowDialog() == DialogResult.OK)
                 Settings = stfrm.GetSettings();
+        }
+
+        private void MainForm_Load(object sender, EventArgs e)
+        {
+            var tst = new Dictionary<string, bool>()
+            {
+                {"some text",true}
+            };
+            tst.Add("some more text", true);
+            ScriptCore.ScriptManager sm = new ScriptCore.ScriptManager(tst);
         }
     }
 }

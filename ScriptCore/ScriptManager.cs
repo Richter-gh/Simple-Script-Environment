@@ -24,6 +24,7 @@ namespace ScriptCore
 
         private List<ExecutableScript> _scripts;
 
+        private string _compilationError;
         public List<ExecutableScript> Scripts { get { return _scripts; }}
         
         /// <summary>
@@ -101,13 +102,13 @@ namespace ScriptCore
                 else
                 {
 
-                    message = string.Format("{0} is already added", file);
+                    message = string.Format("{0} is already added", new FileInfo(file).Name);
                     return false;
                 }
             }
             else
             {
-                message = string.Format("{0} did not compile", file);
+                message = string.Format("{0} did not compile,errors: \n{1}", new FileInfo(file).Name, _compilationError);
                 return false;
             }
         }
@@ -193,7 +194,11 @@ namespace ScriptCore
                             compilerParameters, fileName);
                     if (compilerResults.Errors.Count != 0)
                     {
-                        //MessageBox.Show(compilerResults.Errors[0].ToString());
+                        _compilationError = "";
+                        foreach (CompilerError item in compilerResults.Errors)
+                        {
+                            _compilationError += item.ErrorText + '\n';
+                        }
                         return null;
                     }
                     return compilerResults.CompiledAssembly;

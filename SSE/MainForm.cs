@@ -20,9 +20,7 @@ namespace SSE
         private List<MyCheckBox> _checkBoxList;
         private void SettingsButton_Click(object sender, EventArgs e)
         {
-            SettingsForm stfrm = new SettingsForm();
-            if (stfrm.ShowDialog() == DialogResult.OK)
-                Settings = stfrm.GetSettings();
+            
         }
 
         private void MainForm_Load(object sender, EventArgs e)
@@ -33,10 +31,7 @@ namespace SSE
                 Directory.CreateDirectory("Scripts");
             foreach (string file in Directory.GetFiles("Scripts"))
             {
-                FileInfo fi = new FileInfo(file);
-                string message;
-                if (fi.Extension == ".cs")
-                    _sm.Add(file, true, out message);
+                AddScript(file,true);
             }
             foreach (var item in _sm.Scripts)
             {
@@ -114,19 +109,33 @@ namespace SSE
             {
                 for (int i = 0; i < s.Length; i++)
                 {
-                    if (s[i].Contains(".cs"))
-                    {
-                        string message;
-                        _sm.Add(s[i], false, out message);
-                    }
+                    AddScript(s[i],false);
                 }
                 RepopulatePanel();
             }
         }
+        private void AddScript(string file,bool k)
+        {
+            FileInfo fi = new FileInfo(file);
 
+            if (fi.Extension == ".cs")
+            {
+                string message;
+                if (!_sm.Add(fi.FullName, k, out message))
+                    richTextBox1.Text += message + '\n';
+            }
+        }
         private void panel1_DragEnter(object sender, DragEventArgs e)
         {
             if (e.Data.GetDataPresent(DataFormats.FileDrop)) e.Effect = DragDropEffects.Copy;
+        }
+        
+
+        private void settingsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SettingsForm stfrm = new SettingsForm();
+            if (stfrm.ShowDialog() == DialogResult.OK)
+                Settings = stfrm.GetSettings();
         }
     }
 }

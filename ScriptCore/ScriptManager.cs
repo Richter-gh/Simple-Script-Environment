@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace ScriptCore
 {
@@ -179,6 +180,8 @@ namespace ScriptCore
                     GenerateExecutable = false
                 };
                 compilerParameters.ReferencedAssemblies.Add("ScriptCore.dll");
+                var asm = AppDomain.CurrentDomain.GetAssemblies().Select(x => x.Location).ToArray();
+                compilerParameters.ReferencedAssemblies.AddRange(asm);
                 CompilerResults compilerResults;
                 try
                 {

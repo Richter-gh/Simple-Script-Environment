@@ -18,11 +18,14 @@ namespace SSE
         private Settings.MySettings Settings;
         private ScriptManager _sm;
         private List<MyCheckBox> _checkBoxList;
+        private Timer _timer;
         #endregion
 
         #region Form Events
         private void MainForm_Load(object sender, EventArgs e)
         {
+            _timer = new Timer();
+            _timer.Tick += TickEvent;
             _sm = new ScriptManager();
             _checkBoxList = new List<MyCheckBox>();
             if (!Directory.Exists("Scripts"))
@@ -42,6 +45,8 @@ namespace SSE
                 box.CheckedChanged += OnCheckedChanged;
                 AddToPanel(box);
             }
+            _timer.Interval = 1000;
+            _timer.Start();
         }
 
         private void panel1_DragDrop(object sender, DragEventArgs e)
@@ -122,6 +127,11 @@ namespace SSE
         #endregion
 
         #region My Events
+
+        private void TickEvent(object sender, EventArgs e)
+        {
+            _sm.Execute();
+        }
 
         private void OnCheckedChanged(object sender, EventArgs e)
         {

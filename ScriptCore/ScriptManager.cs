@@ -11,8 +11,9 @@ namespace ScriptCore
 {
     public class ExecutableScript
     {
-        public IExecutable Script;
+        internal IExecutable Script;
         public string FileName;
+        public string ScriptName;
         public bool Run;
     }
 
@@ -65,7 +66,8 @@ namespace ScriptCore
                     {
                         Script = compiled,
                         FileName = file,
-                        Run = run
+                        Run = run,
+                        ScriptName = compiled.Name
                     });
                 message = "";
                 return true;

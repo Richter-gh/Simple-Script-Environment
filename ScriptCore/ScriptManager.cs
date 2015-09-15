@@ -62,7 +62,7 @@ namespace ScriptCore
             if (compiled != null)
             {
 
-                if (!_scripts.Any((x => x.Script == compiled)))
+                if (!_scripts.Any(x => x.Script.Name.Equals(compiled.Name)))
                 {
                     _scripts.Add(
                         new ExecutableScript

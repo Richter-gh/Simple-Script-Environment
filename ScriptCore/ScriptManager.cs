@@ -61,16 +61,26 @@ namespace ScriptCore
             }
             if (compiled != null)
             {
-                _scripts.Add(
-                    new ExecutableScript
-                    {
-                        Script = compiled,
-                        FileName = file,
-                        Run = run,
-                        ScriptName = compiled.Name
-                    });
-                message = "";
-                return true;
+
+                if (!_scripts.Any((x => x.Script == compiled)))
+                {
+                    _scripts.Add(
+                        new ExecutableScript
+                        {
+                            Script = compiled,
+                            FileName = file,
+                            Run = run,
+                            ScriptName = compiled.Name
+                        });
+                    message = "";
+                    return true;
+                }
+                else
+                {
+
+                    message = string.Format("{0} is already added", file);
+                    return false;
+                }
             }
             else
             {

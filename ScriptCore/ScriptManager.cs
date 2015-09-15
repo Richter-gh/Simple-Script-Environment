@@ -19,6 +19,7 @@ namespace ScriptCore
     public class ScriptManager
     {
         private List<ExecutableScript> _scripts;
+        public List<ExecutableScript> Scripts { get { return _scripts; }}
         public string ErrorMessage;
 
         public ScriptManager(IDictionary<string, bool> scripts)

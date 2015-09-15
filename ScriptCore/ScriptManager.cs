@@ -5,8 +5,10 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Microsoft.CSharp;
 
 namespace ScriptCore
 {
@@ -155,14 +157,15 @@ namespace ScriptCore
             CodeDomProvider provider;
             bool fromFile = true;
             FileInfo fileInfo;
+            var additionalCompOptions = new Dictionary<string, string>() { { "CompilerVersion", "v4.0" } };
             try
             {
                 fileInfo = new FileInfo(fileName);
                 if (fileInfo.Extension.ToLower(CultureInfo.InvariantCulture) == ".cs")
-                    provider = CodeDomProvider.CreateProvider("CSharp");
+                    provider = CodeDomProvider.CreateProvider("CSharp", additionalCompOptions);
                 else if (fileInfo.Extension == "")
                 {
-                    provider = CodeDomProvider.CreateProvider("CSharp");
+                    provider = CodeDomProvider.CreateProvider("CSharp", additionalCompOptions);
                     fromFile = false;
                 }
                 else
@@ -170,7 +173,7 @@ namespace ScriptCore
             }
             catch (ArgumentException e)
             {
-                provider = CodeDomProvider.CreateProvider("CSharp");
+                provider = CodeDomProvider.CreateProvider("CSharp", additionalCompOptions);
                 fromFile = false;
             }
             if (provider != null)
@@ -180,9 +183,18 @@ namespace ScriptCore
                     GenerateInMemory = true,
                     GenerateExecutable = false
                 };
+                var tempStrings = File.ReadAllLines(fileName);
+                tempStrings = tempStrings.Where(x => x.StartsWith("using")).Select(x => x).ToArray();
+                for (int i = 0; i < tempStrings.Length; i++)
+                {
+                    tempStrings[i] = Regex.Match(tempStrings[i], "using (.*);").Groups[1].Value;
+
+                   // compilerParameters.ReferencedAssemblies.Add(tempStrings[i]+".dll");
+                }
                 compilerParameters.ReferencedAssemblies.Add("ScriptCore.dll");
-                var asm = AppDomain.CurrentDomain.GetAssemblies().Select(x => x.Location).ToArray();
+                var asm = AppDomain.CurrentDomain.GetAssemblies().Where(x=>!x.IsDynamic).Select(x => x.Location).ToArray();
                 compilerParameters.ReferencedAssemblies.AddRange(asm);
+                
                 CompilerResults compilerResults;
                 try
                 {

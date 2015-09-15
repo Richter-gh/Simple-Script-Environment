@@ -56,6 +56,7 @@ namespace SSE
                 RepopulatePanel();
             }
         }
+
         private void panel1_DragEnter(object sender, DragEventArgs e)
         {
             if (e.Data.GetDataPresent(DataFormats.FileDrop)) e.Effect = DragDropEffects.Copy;
@@ -70,6 +71,10 @@ namespace SSE
         #endregion
 
         #region Panel Management
+
+        /// <summary>
+        /// Redraws the panel with checkboxes
+        /// </summary>
         private void RepopulatePanel()
         {
             int i = 1;
@@ -88,6 +93,9 @@ namespace SSE
             }
         }
 
+        /// <summary>
+        /// Refreshes script run parameter in the panel checkboxes
+        /// </summary>
         private void RefreshPanel()
         {
             int i = 1;
@@ -98,6 +106,10 @@ namespace SSE
             }
         }
 
+        /// <summary>
+        /// Adds a checkbox to the panel
+        /// </summary>
+        /// <param name="box">MyCheckBox object</param>
         private void AddToPanel(MyCheckBox box)
         {
             int i = 1;

@@ -2,24 +2,43 @@
 {
     public abstract class ScriptBase : IExecutable
     {
+        #region Properties
+
+        public virtual string Author { get { return "Me"; } }
+        public abstract string Name { get; }
+        public virtual string Version { get { return "0"; } }
+
+        #endregion
+
+        #region Constructors
+
         public ScriptBase()
         {
             OnLoad();
         }
 
-        public virtual string Author { get { return "Me"; } }
-        public virtual string Name { get { return "Temp"; } }
-        public virtual string Version { get { return "0.0.1"; } }
+        #endregion
+
+        #region Methods
 
         public virtual void OnLoad()
         {
         }
 
+        /// <summary>
+        /// Mandatory function for scripts.
+        /// Is called by ScriptManager if script is set to run
+        /// </summary>
         public abstract void Execute();
 
+        #endregion
+
+        #region Overrides
         public override string ToString()
         {
             return string.Format("Name: {1}, Author: {0}, Version: {2}", Author, Name, Version);
         }
+        
+        #endregion
     }
 }

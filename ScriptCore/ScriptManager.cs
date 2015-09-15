@@ -19,9 +19,20 @@ namespace ScriptCore
 
     public class ScriptManager
     {
+        #region Properties
+
         private List<ExecutableScript> _scripts;
+
         public List<ExecutableScript> Scripts { get { return _scripts; }}
+        
+        /// <summary>
+        /// Is populaterd when SM is initialized with IDict
+        /// </summary>
         public string ErrorMessage;
+
+        #endregion
+
+        #region Constructors
 
         public ScriptManager(IDictionary<string, bool> scripts)
         {
@@ -46,6 +57,17 @@ namespace ScriptCore
             _scripts = new List<ExecutableScript>();
         }
 
+        #endregion
+
+        #region Methods
+
+        /// <summary>
+        /// Adds the script in file to the collection if it compiles.
+        /// </summary>
+        /// <param name="file">Path to file win the script.</param>
+        /// <param name="run">True if script should be executed.</param>
+        /// <param name="message">Contains error message or an empty string</param>
+        /// <returns>True if the script is successfully added to colelction.</returns>
         public bool Add(string file, bool run, out string message)
         {
             IExecutable compiled;
@@ -89,6 +111,11 @@ namespace ScriptCore
             }
         }
 
+        /// <summary>
+        /// Removes the script from collection
+        /// </summary>
+        /// <param name="file">File containing the script</param>
+        /// <returns>True if the script was removed</returns>
         public bool Remove(string file)
         {
             var removable = _scripts.SingleOrDefault(x => x.FileName == file);
@@ -100,6 +127,9 @@ namespace ScriptCore
             return false;
         }
 
+        /// <summary>
+        /// Executes all scripts from the collection in parallel mode.
+        /// </summary>
         public void Execute()
         {
             lock (_scripts)
@@ -112,6 +142,11 @@ namespace ScriptCore
             }
         }
 
+        /// <summary>
+        /// Compiles the assembly from file
+        /// </summary>
+        /// <param name="fileName">Path to file with the script</param>
+        /// <returns>Compiled assembly or null if compilation failed</returns>
         private Assembly Compile(string fileName)
         {
             if (fileName == null) throw new ArgumentNullException(nameof(fileName));
@@ -166,5 +201,6 @@ namespace ScriptCore
             }
             return null;
         }
+        #endregion
     }
 }

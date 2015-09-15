@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Windows.Forms;
 using ScriptCore;
 
@@ -56,34 +57,35 @@ namespace SSE
             foreach (var item in _checkBoxList)
             {
                 if (item.Script.FileName == box.Script.FileName)
+                {
                     item.Script.Run = box.Checked;
+                }
                 item.Refresh();
             }
-            //RefreshPanel();
-        }
-        private void MainForm_DragDrop(object sender, DragEventArgs e)
-        {
-            var s = (string[])e.Data.GetData(DataFormats.FileDrop, false);
-            if (s != null)
-            {                
-                for (int i = 0; i < s.Length; i++)
+            foreach (var item in _sm.Scripts)
+            {
+                if (item.FileName == box.Script.FileName)
                 {
-                    if (s[i].Contains(".cs"))
-                    {
-                        string message;
-                        _sm.Add(s[i], false, out message);
-                    }
+                    item.Run = box.Checked;
                 }
-                RepopulatePanel();
             }
+            //RefreshPanel();
         }
         private void RepopulatePanel()
         {
             int i = 1;
             panel1.Controls.Clear();
-            foreach (var item in _checkBoxList)
-            {                
-                panel1.Controls.Add(item);
+            _checkBoxList.Clear();
+            foreach (var item in _sm.Scripts)
+            {
+                var box = new MyCheckBox();
+                box.Tag = item.ScriptName;
+                box.Text = item.ScriptName;
+                box.Script = item;
+                box.Checked =item.Run;
+                box.AutoSize = true;
+                box.CheckedChanged += OnCheckedChanged;
+                AddToPanel(box);
             }
         }
         private void RefreshPanel()
@@ -99,10 +101,32 @@ namespace SSE
         {
             int i = 1;
             if(_checkBoxList.Count>0)
-                i = _checkBoxList[_checkBoxList.Count-1].Location.Y/50;
-            box.Location = new Point(10, i * 50);
+                i += _checkBoxList[_checkBoxList.Count-1].Location.Y/20;
+            box.Location = new Point(20, i * 20);
+            _checkBoxList.Add(box);
             panel1.Controls.Add(box);
         }
 
+        private void panel1_DragDrop(object sender, DragEventArgs e)
+        {
+            var s = (string[])e.Data.GetData(DataFormats.FileDrop, false);
+            if (s != null)
+            {
+                for (int i = 0; i < s.Length; i++)
+                {
+                    if (s[i].Contains(".cs"))
+                    {
+                        string message;
+                        _sm.Add(s[i], false, out message);
+                    }
+                }
+                RepopulatePanel();
+            }
+        }
+
+        private void panel1_DragEnter(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(DataFormats.FileDrop)) e.Effect = DragDropEffects.Copy;
+        }
     }
 }

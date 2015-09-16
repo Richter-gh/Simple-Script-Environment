@@ -34,5 +34,10 @@ namespace SSE
             MinimizedStartCheckbox.Checked=settings.minimizedStart;
             AutostartCheckBox.Checked = settings.runOnWinStart;
         }
+
+        private void AutostartCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            MainForm.RegisterInStartup(AutostartCheckBox.Checked);
+        }
     }
 }

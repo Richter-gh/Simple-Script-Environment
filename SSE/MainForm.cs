@@ -21,6 +21,7 @@ namespace SSE
         private List<MyCheckBox> _checkBoxList;
         private Timer _timer;
         private NotifyIcon _trayIcon;
+        private string _scriptsFolder = AppDomain.CurrentDomain.BaseDirectory + "Scripts\\";
         #endregion
 
         #region Form Events
@@ -33,14 +34,13 @@ namespace SSE
             _trayIcon.Click += trayOpenClick;
             _trayIcon.Visible = true;
             _trayIcon.Icon = this.Icon;
-            this.ShowInTaskbar = false;
             _timer = new Timer();
             _timer.Tick += TickEvent;
             _sm = new ScriptManager();
             _checkBoxList = new List<MyCheckBox>();
-            if (!Directory.Exists("Scripts"))
-                Directory.CreateDirectory("Scripts");
-            foreach (string file in Directory.GetFiles("Scripts","*.cs",SearchOption.AllDirectories))
+            if (!Directory.Exists(_scriptsFolder))
+                Directory.CreateDirectory(_scriptsFolder);
+            foreach (string file in Directory.GetFiles(_scriptsFolder, "*.cs",SearchOption.AllDirectories))
             {
                 AddScript(file, true);
             }
@@ -62,17 +62,27 @@ namespace SSE
 
             if (Settings.minimizedStart)
                 this.WindowState = FormWindowState.Minimized;
-                
-       
+
+            RepopulatePanel();
             //if(Settings.runOnWinStart)
             //kek
         }
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            RegisterInStartup(Settings.runOnWinStart);
+            //RegisterInStartup(Settings.runOnWinStart);
             _trayIcon.Visible = false;
         }
+        
+        private void MainForm_Resize(object sender, EventArgs e)
+        {
+            if (WindowState == FormWindowState.Minimized)
+            {
+                this.Hide();
+                this.ShowInTaskbar = false;
+            }
+        }
+
         private void panel1_DragDrop(object sender, DragEventArgs e)
         {
             var s = (string[])e.Data.GetData(DataFormats.FileDrop, false);
@@ -101,6 +111,28 @@ namespace SSE
                 LoadSettings(settings);
             }
         }
+        private void fromFolderToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var browser = new FolderBrowserDialog();
+            browser.Description = "Select Script folder";
+            if (browser.ShowDialog() == DialogResult.OK)
+            {
+                AddScript(browser.SelectedPath, false);
+            }
+        }
+
+        private void fromFileToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var browser = new OpenFileDialog();
+            browser.Title = "Select Script file";
+            browser.Filter = "CS files|*.cs";
+            if (browser.ShowDialog() == DialogResult.OK)
+            {
+                string path = Path.GetDirectoryName(browser.FileName) + "\\" + browser.SafeFileName;
+                AddScript(path, false);
+            }
+        }
+        
         #endregion
 
         #region Panel Management
@@ -163,6 +195,8 @@ namespace SSE
 
         private void trayOpenClick(object sender, EventArgs e)
         {
+            this.Show();
+            this.ShowInTaskbar = true;
             this.WindowState = FormWindowState.Normal;
         }
 
@@ -200,7 +234,7 @@ namespace SSE
         /// Register for autostart on windows startup
         /// </summary>
         /// <param name="isChecked"></param>
-        private void RegisterInStartup(bool isChecked)
+        public static void RegisterInStartup(bool isChecked)
         {
             RegistryKey registryKey = Registry.CurrentUser.OpenSubKey
                     ("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
@@ -223,20 +257,86 @@ namespace SSE
                 this.Settings = settings;
         }
 
-        private void AddScript(string file, bool k)
+        private void AddScript(string text, bool k)
         {
-            FileInfo fi = new FileInfo(file);
-
-            if (fi.Extension == ".cs")
+            if (Directory.Exists(text))
             {
-                string message;
-                if (!_sm.Add(fi.FullName, k, out message))
-                    richTextBox1.Text += message + '\n';
+                bool copied = false;
+                foreach (string file in Directory.GetFiles(text, "*.cs", SearchOption.AllDirectories))
+                {
+                    FileInfo fi = new FileInfo(file);
+                    if (fi.Extension == ".cs")
+                    {
+                        string message;
+                        if (!_sm.Add(fi.FullName, k, out message))
+                            richTextBox1.Text += message + '\n';
+                        else
+                        {
+                            if (!copied)
+                            {
+                                DirectoryCopy(text, _scriptsFolder);
+                                copied = true;
+                            }
+                        }
+                    }
+                }
+            }
+            else
+            {
+                FileInfo fi = new FileInfo(text);
+                if (fi.Extension == ".cs")
+                {
+                    string message;
+                    if (!_sm.Add(fi.FullName, k, out message))
+                        richTextBox1.Text += message + '\n';
+                    else
+                    {
+                        if (!File.Exists(_scriptsFolder + fi.Name))
+                            File.Copy(text, _scriptsFolder + fi.Name, true);
+                    }
+                }
+            }
+            RepopulatePanel();
+        }
+
+        /// <summary>
+        /// Copies recursively source directory to destination
+        /// </summary>
+        /// <param name="sourceDirectory"></param>
+        /// <param name="targetDirectory"></param>
+        public void DirectoryCopy(string sourceDirectory, string targetDirectory)
+        {
+            DirectoryInfo diSource = new DirectoryInfo(sourceDirectory);
+            DirectoryInfo diTarget = new DirectoryInfo(targetDirectory+ diSource.Name);
+
+            CopyAll(diSource, diTarget);
+        }
+
+        public void CopyAll(DirectoryInfo source, DirectoryInfo target)
+        {
+            // Check if the target directory exists; if not, create it.
+            if (Directory.Exists(target.FullName) == false)
+            {
+                Directory.CreateDirectory(target.FullName);
+            }
+
+            // Copy each file into the new directory.
+            foreach (FileInfo fi in source.GetFiles())
+            {
+                fi.CopyTo(Path.Combine(target.FullName, fi.Name), true);
+            }
+
+            // Copy each subdirectory using recursion.
+            foreach (DirectoryInfo diSourceSubDir in source.GetDirectories())
+            {
+                DirectoryInfo nextTargetSubDir =
+                    target.CreateSubdirectory(diSourceSubDir.Name);
+                CopyAll(diSourceSubDir, nextTargetSubDir);
             }
         }
 
         #endregion
-
         
+
     }
 }

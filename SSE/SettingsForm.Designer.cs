@@ -63,6 +63,7 @@
             this.AutostartCheckBox.TabIndex = 2;
             this.AutostartCheckBox.Text = "Run on windows start";
             this.AutostartCheckBox.UseVisualStyleBackColor = true;
+            this.AutostartCheckBox.CheckedChanged += new System.EventHandler(this.AutostartCheckBox_CheckedChanged);
             // 
             // SettingsForm
             // 

@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Microsoft.CSharp;
@@ -25,7 +26,6 @@ namespace ScriptCore
         #region Properties
 
         private List<ExecutableScript> _scripts;
-
         private string _compilationError;
         public List<ExecutableScript> Scripts { get { return _scripts; }}
         
@@ -75,6 +75,9 @@ namespace ScriptCore
         public bool Add(string file, bool run, out string message)
         {
             IExecutable compiled;
+            string fileName;
+            try { fileName = new FileInfo(file).Name; }
+            catch { fileName = "temp.cs"; }
             try
             {
                 compiled = (from type in Compile(file).GetTypes()
@@ -102,15 +105,14 @@ namespace ScriptCore
                     return true;
                 }
                 else
-                {
-
-                    message = string.Format("{0} is already added", new FileInfo(file).Name);
+                {                    
+                    message = string.Format("{0} is already added", fileName);
                     return false;
                 }
             }
             else
             {
-                message = string.Format("{0} did not compile,errors: \n{1}", new FileInfo(file).Name, _compilationError);
+                message = string.Format("{0} did not compile,errors: \n{1}", fileName, _compilationError);
                 return false;
             }
         }
@@ -136,15 +138,15 @@ namespace ScriptCore
         /// </summary>
         public void Execute()
         {
-            Task.Factory.StartNew( ()=>
-                Parallel.ForEach<ExecutableScript>(_scripts, script =>
-                {
-                    if (script.Run)
-                        script.Script.Execute();
-                }));
+            Parallel.ForEach<ExecutableScript>(_scripts, script =>
+            {
+                if (script.Run)
+                    script.Script.Execute();
+            });
             
         }
 
+        
         /// <summary>
         /// Compiles the assembly from file
         /// </summary>
@@ -182,14 +184,14 @@ namespace ScriptCore
                     GenerateInMemory = true,
                     GenerateExecutable = false
                 };
-                var tempStrings = File.ReadAllLines(fileName);
+                /*var tempStrings = File.ReadAllLines(fileName);
                 tempStrings = tempStrings.Where(x => x.StartsWith("using")).Select(x => x).ToArray();
                 for (int i = 0; i < tempStrings.Length; i++)
                 {
                     tempStrings[i] = Regex.Match(tempStrings[i], "using (.*);").Groups[1].Value;
 
                    // compilerParameters.ReferencedAssemblies.Add(tempStrings[i]+".dll");
-                }
+                }*/
                 compilerParameters.ReferencedAssemblies.Add("ScriptCore.dll");
                 var asm = AppDomain.CurrentDomain.GetAssemblies().Where(x=>!x.IsDynamic).Select(x => x.Location).ToArray();
                 compilerParameters.ReferencedAssemblies.AddRange(asm);

@@ -138,11 +138,11 @@ namespace ScriptCore
         {
             lock (_scripts)
             {
-                Parallel.ForEach(_scripts, script =>
+                Task.Factory.StartNew(() => Parallel.ForEach<ExecutableScript>(_scripts, script => 
                 {
                     if (script.Run)
                         script.Script.Execute();
-                });
+                }));                
             }
         }
 

@@ -40,9 +40,13 @@ namespace SSE
             _checkBoxList = new List<MyCheckBox>();
             if (!Directory.Exists(_scriptsFolder))
                 Directory.CreateDirectory(_scriptsFolder);
-            foreach (string file in Directory.GetFiles(_scriptsFolder, "*.cs",SearchOption.AllDirectories))
+            foreach (string file in Directory.GetFiles(_scriptsFolder, "*.cs"))
             {
                 AddScript(file, true);
+            }
+            foreach (string directory in Directory.GetDirectories(_scriptsFolder))
+            {
+                AddScript(directory, true);
             }
             foreach (var item in _sm.Scripts)
             {
@@ -272,7 +276,7 @@ namespace SSE
                             richTextBox1.Text += message + '\n';
                         else
                         {
-                            if (!copied)
+                            if (!copied && !Directory.Exists(_scriptsFolder+(new DirectoryInfo(text)).Name))
                             {
                                 DirectoryCopy(text, _scriptsFolder);
                                 copied = true;

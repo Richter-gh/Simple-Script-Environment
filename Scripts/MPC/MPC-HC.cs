@@ -38,7 +38,7 @@ namespace Scripts
         private bool _mpcLaunched = false;
         private bool _boxShown = false;
         private bool _deviceChanged = false;
-        public Form frm = new Form();//test later
+        //public Form frm = new Form();//test later
         public void Execute()
         {
             bool mpc = (Process.GetProcessesByName("mpc-hc").Length > 0 ||
@@ -53,8 +53,8 @@ namespace Scripts
                 //device 3 - speakers
                 _boxShown = true;
                 //change default output device to TV
-                frm.TopMost = true;
-                //if (MessageBox.Show(frm,"Switch audio device to TV?","MPC lauched",MessageBoxButtons.YesNo) == //DialogResult.Yes)
+                //frm.TopMost = true;
+                if (MessageBox.Show("Switch audio device to TV?","MPC lauched",MessageBoxButtons.YesNo) == DialogResult.Yes)
                 {
                     if (!_deviceChanged)
                     {
@@ -67,10 +67,11 @@ namespace Scripts
             {
                 if (_deviceChanged)
                 {
-                    _mpcLaunched = false;
                     SelectDevice(3);
-                    _deviceChanged = false;
                 }
+                _boxShown = false;
+                _mpcLaunched = false;
+                _deviceChanged = false;
             }
         }
 
@@ -85,7 +86,7 @@ namespace Scripts
                                     UseShellExecute = false,
                                     RedirectStandardOutput = true,
                                     CreateNoWindow = true,
-                                    FileName = AppDomain.CurrentDomain.BaseDirectory+"Scripts\\MPC-HC\\EndPointController.exe",
+                                    FileName = AppDomain.CurrentDomain.BaseDirectory+"Scripts\\MPC\\EndPointController.exe",
                                     Arguments = "-f \"%d|%ws|%d|%d\""
                                 }
             };
@@ -114,7 +115,7 @@ namespace Scripts
                                     UseShellExecute = false,
                                     RedirectStandardOutput = true,
                                     CreateNoWindow = true,
-                                    FileName = AppDomain.CurrentDomain.BaseDirectory+"Scripts\\MPC-HC\\EndPointController.exe",
+                                    FileName = AppDomain.CurrentDomain.BaseDirectory+"Scripts\\MPC\\EndPointController.exe",
                                     Arguments = id.ToString(CultureInfo.InvariantCulture)
                                 }
             };

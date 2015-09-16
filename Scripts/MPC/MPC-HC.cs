@@ -5,7 +5,8 @@ using System.Globalization;
 using System.Windows.Forms;
 using System.Threading;
 using ScriptCore;
-
+//https://github.com/marcjoha/AudioSwitcher
+// thanks to this project^
 namespace Scripts
 {
     internal class MPCMonitor : IExecutable

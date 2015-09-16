@@ -85,7 +85,7 @@ namespace Scripts
                                     UseShellExecute = false,
                                     RedirectStandardOutput = true,
                                     CreateNoWindow = true,
-                                    FileName = AppDomain.CurrentDomain.BaseDirectory+"Scripts\\EndPointController.exe",
+                                    FileName = AppDomain.CurrentDomain.BaseDirectory+"Scripts\\MPC-HC\\EndPointController.exe",
                                     Arguments = "-f \"%d|%ws|%d|%d\""
                                 }
             };
@@ -114,7 +114,7 @@ namespace Scripts
                                     UseShellExecute = false,
                                     RedirectStandardOutput = true,
                                     CreateNoWindow = true,
-                                    FileName = AppDomain.CurrentDomain.BaseDirectory+"Scripts\\EndPointController.exe",
+                                    FileName = AppDomain.CurrentDomain.BaseDirectory+"Scripts\\MPC-HC\\EndPointController.exe",
                                     Arguments = id.ToString(CultureInfo.InvariantCulture)
                                 }
             };

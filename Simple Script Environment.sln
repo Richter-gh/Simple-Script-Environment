@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScriptCore", "ScriptCore\Sc
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScriptCoreTests", "ScriptCoreTests\ScriptCoreTests.csproj", "{12763CED-EC46-47E4-A3EA-30DF64115301}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Scripts", "Scripts\Scripts.csproj", "{260FF14A-721F-4B80-B6C0-4F29876C9EFC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{12763CED-EC46-47E4-A3EA-30DF64115301}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{12763CED-EC46-47E4-A3EA-30DF64115301}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{12763CED-EC46-47E4-A3EA-30DF64115301}.Release|Any CPU.Build.0 = Release|Any CPU
+		{260FF14A-721F-4B80-B6C0-4F29876C9EFC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{260FF14A-721F-4B80-B6C0-4F29876C9EFC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{260FF14A-721F-4B80-B6C0-4F29876C9EFC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{260FF14A-721F-4B80-B6C0-4F29876C9EFC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

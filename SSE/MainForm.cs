@@ -40,7 +40,7 @@ namespace SSE
             _checkBoxList = new List<MyCheckBox>();
             if (!Directory.Exists("Scripts"))
                 Directory.CreateDirectory("Scripts");
-            foreach (string file in Directory.GetFiles("Scripts"))
+            foreach (string file in Directory.GetFiles("Scripts","*.cs",SearchOption.AllDirectories))
             {
                 AddScript(file, true);
             }

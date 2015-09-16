@@ -11,19 +11,28 @@ namespace SSE
     {
         public MainForm()
         {
-            InitializeComponent();
+            InitializeComponent();                    
         }
         
         #region Properties
-        private Settings.MySettings Settings;
+        private MySettings Settings;
         private ScriptManager _sm;
         private List<MyCheckBox> _checkBoxList;
         private Timer _timer;
+        private NotifyIcon _trayIcon;
         #endregion
 
         #region Form Events
         private void MainForm_Load(object sender, EventArgs e)
         {
+            _trayIcon = new NotifyIcon();
+            _trayIcon.Text = "Simple Script Environment";
+            _trayIcon.ContextMenu = new ContextMenu();
+            _trayIcon.ContextMenu.MenuItems.Add(new MenuItem("Exit", new EventHandler(trayExitClick)));
+            _trayIcon.Click += trayOpenClick;
+            _trayIcon.Visible = true;
+            _trayIcon.Icon = this.Icon;
+            this.ShowInTaskbar = false;
             _timer = new Timer();
             _timer.Tick += TickEvent;
             _sm = new ScriptManager();
@@ -47,6 +56,13 @@ namespace SSE
             }
             _timer.Interval = 1000;
             _timer.Start();
+
+            LoadSettings(null);
+
+            if (Settings.minimizedStart)
+                this.WindowState = FormWindowState.Minimized;
+            //if(Settings.runOnWinStart)
+            //kek
         }
 
         private void panel1_DragDrop(object sender, DragEventArgs e)
@@ -70,8 +86,12 @@ namespace SSE
         private void settingsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             SettingsForm stfrm = new SettingsForm();
+            stfrm.settings = this.Settings;
             if (stfrm.ShowDialog() == DialogResult.OK)
-                Settings = stfrm.GetSettings();
+            {
+                var settings = stfrm.GetSettings();
+                LoadSettings(settings);
+            }
         }
         #endregion
 
@@ -128,6 +148,16 @@ namespace SSE
 
         #region My Events
 
+        private void trayExitClick(object sender, EventArgs e)
+        {
+            this.Close();
+        }
+
+        private void trayOpenClick(object sender, EventArgs e)
+        {
+            this.WindowState = FormWindowState.Normal;
+        }
+
         private void TickEvent(object sender, EventArgs e)
         {
             _sm.Execute();
@@ -157,6 +187,15 @@ namespace SSE
         #endregion
         
         #region Methods
+
+        private void LoadSettings(MySettings settings)
+        {
+            
+            if (settings == null)
+                this.Settings = MySettings.Load();
+            else
+                this.Settings = settings;
+        }
 
         private void AddScript(string file, bool k)
         {

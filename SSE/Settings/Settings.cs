@@ -2,12 +2,7 @@
 using System.Web.Script.Serialization;
 
 namespace SSE.Settings
-{
-    public class MySettings : AppSettings<MySettings>
-    {
-        public bool minimizedStart;
-    }
-
+{  
     public class AppSettings<T> where T : new()
     {
         private const string DEFAULT_FILENAME = "settings.jsn";

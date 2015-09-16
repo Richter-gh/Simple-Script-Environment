@@ -6,7 +6,7 @@ namespace SSE
 {
     public partial class SettingsForm : Form
     {
-        private MySettings settings;
+        public MySettings settings;
 
         public SettingsForm()
         {
@@ -16,6 +16,7 @@ namespace SSE
         private void SettingsOk_Click(object sender, EventArgs e)
         {
             settings.minimizedStart = MinimizedStartCheckbox.Checked;
+            settings.runOnWinStart = AutostartCheckBox.Checked;
             settings.Save();
             this.DialogResult = DialogResult.OK;
             this.Close();
@@ -28,7 +29,8 @@ namespace SSE
 
         private void SettingsForm_Load(object sender, EventArgs e)
         {
-            settings = MySettings.Load();
+            if(settings==null)
+                settings = MySettings.Load();
         }
     }
 }

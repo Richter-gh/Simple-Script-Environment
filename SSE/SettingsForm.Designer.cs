@@ -30,6 +30,7 @@
         {
             this.MinimizedStartCheckbox = new System.Windows.Forms.CheckBox();
             this.SettingsOk = new System.Windows.Forms.Button();
+            this.AutostartCheckBox = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // MinimizedStartCheckbox
@@ -53,11 +54,22 @@
             this.SettingsOk.UseVisualStyleBackColor = true;
             this.SettingsOk.Click += new System.EventHandler(this.SettingsOk_Click);
             // 
+            // AutostartCheckBox
+            // 
+            this.AutostartCheckBox.AutoSize = true;
+            this.AutostartCheckBox.Location = new System.Drawing.Point(13, 36);
+            this.AutostartCheckBox.Name = "AutostartCheckBox";
+            this.AutostartCheckBox.Size = new System.Drawing.Size(128, 17);
+            this.AutostartCheckBox.TabIndex = 2;
+            this.AutostartCheckBox.Text = "Run on windows start";
+            this.AutostartCheckBox.UseVisualStyleBackColor = true;
+            // 
             // SettingsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(292, 273);
+            this.Controls.Add(this.AutostartCheckBox);
             this.Controls.Add(this.SettingsOk);
             this.Controls.Add(this.MinimizedStartCheckbox);
             this.Name = "SettingsForm";
@@ -72,5 +84,6 @@
 
         private System.Windows.Forms.CheckBox MinimizedStartCheckbox;
         private System.Windows.Forms.Button SettingsOk;
+        private System.Windows.Forms.CheckBox AutostartCheckBox;
     }
 }

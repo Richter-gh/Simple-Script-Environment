@@ -140,8 +140,15 @@ namespace ScriptCore
         {
             Parallel.ForEach<ExecutableScript>(_scripts, script =>
             {
-                if (script.Run)
-                    script.Script.Execute();
+                try {
+                    if (script.Run)
+                        script.Script.Execute();
+                }
+                catch(Exception e)
+                {
+                    script.Run = false;
+                    MessageBox.Show(e.ToString());
+                }
             });
             
         }

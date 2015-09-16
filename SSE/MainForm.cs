@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
+using Microsoft.Win32;
 using ScriptCore;
 
 namespace SSE
@@ -61,10 +62,17 @@ namespace SSE
 
             if (Settings.minimizedStart)
                 this.WindowState = FormWindowState.Minimized;
+                
+       
             //if(Settings.runOnWinStart)
             //kek
         }
 
+        private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            RegisterInStartup(Settings.runOnWinStart);
+            _trayIcon.Visible = false;
+        }
         private void panel1_DragDrop(object sender, DragEventArgs e)
         {
             var s = (string[])e.Data.GetData(DataFormats.FileDrop, false);
@@ -185,8 +193,26 @@ namespace SSE
         }
 
         #endregion
-        
+
         #region Methods
+
+        /// <summary>
+        /// Register for autostart on windows startup
+        /// </summary>
+        /// <param name="isChecked"></param>
+        private void RegisterInStartup(bool isChecked)
+        {
+            RegistryKey registryKey = Registry.CurrentUser.OpenSubKey
+                    ("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
+            if (isChecked)
+            {
+                registryKey.SetValue("ApplicationName", Application.ExecutablePath);
+            }
+            else
+            {
+                registryKey.DeleteValue("ApplicationName");
+            }
+        }
 
         private void LoadSettings(MySettings settings)
         {
@@ -210,5 +236,7 @@ namespace SSE
         }
 
         #endregion
+
+        
     }
 }

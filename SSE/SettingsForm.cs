@@ -31,6 +31,8 @@ namespace SSE
         {
             if(settings==null)
                 settings = MySettings.Load();
+            MinimizedStartCheckbox.Checked=settings.minimizedStart;
+            AutostartCheckBox.Checked = settings.runOnWinStart;
         }
     }
 }

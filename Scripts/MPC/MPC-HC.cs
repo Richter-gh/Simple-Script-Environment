@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.Windows.Forms;
+using System.Threading;
 using ScriptCore;
 
 namespace Scripts
@@ -33,36 +34,43 @@ namespace Scripts
             }
         }
 
-        private bool _mpcLaunched;
-        private bool _boxShown;
-        public Form frm = new Form();
+        private bool _mpcLaunched = false;
+        private bool _boxShown = false;
+        private bool _deviceChanged = false;
+        public Form frm = new Form();//test later
         public void Execute()
         {
-            if (Process.GetProcessesByName("mpc-hc").Length > 0 && !_mpcLaunched)
+            bool mpc = (Process.GetProcessesByName("mpc-hc").Length > 0 ||
+                 Process.GetProcessesByName("mpc-hc64").Length > 0);
+            if (mpc && !_mpcLaunched)
             {
                 _mpcLaunched = true;
             }
-            if (_mpcLaunched && !_boxShown)
+            if (_mpcLaunched && !_boxShown && mpc)
             {
-                //change default output device to TV
-                if (MessageBox.Show("Switch audio device to TV?",
-                                    "MPC lauched",  
-                                    MessageBoxButtons.YesNo) == DialogResult.Yes)
-                {
-                    frm.Show();
-                    foreach (var tuple in GetDevices())
-                    {
-                        var id = tuple.Item1;
-                        var deviceName = tuple.Item2;
-                        var isInUse = tuple.Item3;
-                        MessageBox.Show(deviceName);
-                    }
-
-                }
+                //device 1 - TV
+                //device 3 - speakers
                 _boxShown = true;
+                //change default output device to TV
+                frm.TopMost = true;
+                //if (MessageBox.Show(frm,"Switch audio device to TV?","MPC lauched",MessageBoxButtons.YesNo) == //DialogResult.Yes)
+                {
+                    if (!_deviceChanged)
+                    {
+                        SelectDevice(1);
+                        _deviceChanged = true;
+                    }
+                }
             }
-            if (Process.GetProcessesByName("mpc-hc").Length == 0)
-                _mpcLaunched = false;
+            if (!mpc && _mpcLaunched)
+            {
+                if (_deviceChanged)
+                {
+                    _mpcLaunched = false;
+                    SelectDevice(3);
+                    _deviceChanged = false;
+                }
+            }
         }
 
         #region EndPointController.exe interaction
@@ -76,14 +84,14 @@ namespace Scripts
                                     UseShellExecute = false,
                                     RedirectStandardOutput = true,
                                     CreateNoWindow = true,
-                                    FileName = "EndPointController.exe",
+                                    FileName = AppDomain.CurrentDomain.BaseDirectory+"Scripts\\EndPointController.exe",
                                     Arguments = "-f \"%d|%ws|%d|%d\""
                                 }
             };
             p.Start();
+            Thread.Sleep(500);
             p.WaitForExit();
             var stdout = p.StandardOutput.ReadToEnd().Trim();
-
             var devices = new List<Tuple<int, string, bool>>();
 
             foreach (var line in stdout.Split('\n'))
@@ -105,7 +113,7 @@ namespace Scripts
                                     UseShellExecute = false,
                                     RedirectStandardOutput = true,
                                     CreateNoWindow = true,
-                                    FileName = "EndPointController.exe",
+                                    FileName = AppDomain.CurrentDomain.BaseDirectory+"Scripts\\EndPointController.exe",
                                     Arguments = id.ToString(CultureInfo.InvariantCulture)
                                 }
             };

@@ -99,9 +99,15 @@
     <ProjectReference Include="..\ScriptCore\ScriptCore.csproj">
       <Project>{d6617ce2-3da1-4148-a449-e298d4e9a4a0}</Project>
       <Name>ScriptCore</Name>
+      <Private>True</Private>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>mkdir Core
+mkdir Scripts
+mv ScriptCore.* Core</PostBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

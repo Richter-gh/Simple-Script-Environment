@@ -39,13 +39,15 @@ namespace SSE
             _timer = new Timer();
             _timer.Tick += TickEvent;
             _sm = new ScriptManager();
+            if (!Directory.Exists(_scriptsFolder))
+                Directory.CreateDirectory(_scriptsFolder);
+            if (!Directory.Exists(_coreFolder))
+                Directory.CreateDirectory(_coreFolder);
             _checkBoxList = new List<MyCheckBox>();
             foreach (string file in Directory.GetFiles(_coreFolder, "*.dll"))
             {
                 Assembly.LoadFrom(file);
             }
-            if (!Directory.Exists(_scriptsFolder))
-                Directory.CreateDirectory(_scriptsFolder);
             foreach (string file in Directory.GetFiles(_scriptsFolder, "*.cs"))
             {
                 AddScript(file, true);

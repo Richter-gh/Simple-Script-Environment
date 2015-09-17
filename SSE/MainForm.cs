@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
-using System.Reflection;
 using System.Windows.Forms;
 using Microsoft.Win32;
 using ScriptCore;
@@ -23,7 +22,6 @@ namespace SSE
         private Timer _timer;
         private NotifyIcon _trayIcon;
         private string _scriptsFolder = AppDomain.CurrentDomain.BaseDirectory + "Scripts\\";
-        private string _coreFolder = AppDomain.CurrentDomain.BaseDirectory + "Core\\";
         #endregion
 
         #region Form Events
@@ -39,15 +37,9 @@ namespace SSE
             _timer = new Timer();
             _timer.Tick += TickEvent;
             _sm = new ScriptManager();
+            _checkBoxList = new List<MyCheckBox>();
             if (!Directory.Exists(_scriptsFolder))
                 Directory.CreateDirectory(_scriptsFolder);
-            if (!Directory.Exists(_coreFolder))
-                Directory.CreateDirectory(_coreFolder);
-            _checkBoxList = new List<MyCheckBox>();
-            foreach (string file in Directory.GetFiles(_coreFolder, "*.dll"))
-            {
-                Assembly.LoadFrom(file);
-            }
             foreach (string file in Directory.GetFiles(_scriptsFolder, "*.cs"))
             {
                 AddScript(file, true);
@@ -296,7 +288,7 @@ namespace SSE
             else
             {
                 FileInfo fi = new FileInfo(text);
-                if (fi.Extension == ".cs"|| fi.Extension == ".dll")
+                if (fi.Extension == ".cs")
                 {
                     string message;
                     if (!_sm.Add(fi.FullName, k, out message))

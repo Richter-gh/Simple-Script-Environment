@@ -86,6 +86,7 @@ namespace ScriptCore
             }
             catch (NullReferenceException e)
             {
+                MessageBox.Show(e.ToString());
                 compiled = null;
             }
             if (compiled != null)
@@ -181,6 +182,7 @@ namespace ScriptCore
             }
             catch (ArgumentException e)
             {
+                MessageBox.Show(e.ToString(), "ScriptManager.Compile exception");
                 provider = CodeDomProvider.CreateProvider("CSharp", additionalCompOptions);
                 fromFile = false;
             }
@@ -225,6 +227,7 @@ namespace ScriptCore
                 }
                 catch (Exception e)
                 {
+                    MessageBox.Show(e.ToString(), "ScriptManager.Compile exception");
                 }
             }
             return null;

@@ -146,7 +146,6 @@ namespace SSE
         /// </summary>
         private void RepopulatePanel()
         {
-            int i = 1;
             panel1.Controls.Clear();
             _checkBoxList.Clear();
             foreach (var item in _sm.Scripts)
@@ -167,7 +166,6 @@ namespace SSE
         /// </summary>
         private void RefreshPanel()
         {
-            int i = 1;
             panel1.Controls.Clear();
             foreach (MyCheckBox item in panel1.Controls)
             {

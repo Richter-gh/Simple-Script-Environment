@@ -13,8 +13,7 @@
         #region Constructors
 
         public ScriptBase()
-        {
-            OnLoad();
+        {           
         }
 
         #endregion

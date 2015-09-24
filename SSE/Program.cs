@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Reflection;
 using System.Windows.Forms;
-using ScriptCore;
 
 namespace SSE
 {
@@ -13,6 +12,8 @@ namespace SSE
         [STAThread]
         private static void Main()
         {
+            Assembly asm = Assembly.LoadFrom(AppDomain.CurrentDomain.BaseDirectory+"ScriptCore.dll");
+            AppDomain.CurrentDomain.Load(asm.GetName());
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new MainForm());

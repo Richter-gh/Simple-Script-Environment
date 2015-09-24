@@ -30,7 +30,7 @@
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
+    <PlatformTarget>x86</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -40,7 +40,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
+    <PlatformTarget>x86</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -150,7 +150,11 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>cp -f "$(ProjectDir)bin\Release\SSE.exe" "C:\Users\Richter\Desktop\ScriptKek\SSE.exe"
-cp -f "$(ProjectDir)bin\Release\ScriptCore.dll" C:\Users\Richter\Desktop\ScriptKek\ScriptCore.dll"</PostBuildEvent>
+cp -f "$(ProjectDir)bin\Release\ScriptCore.dll" "C:\Users\Richter\Desktop\ScriptKek\ScriptCore.dll"</PostBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PreBuildEvent>xcopy "$(SolutionDir)Scripts" "$(TargetDir)Scripts" /E /Y /i /S /R
+xcopy "$(SolutionDir)Scripts" "C:\Users\Richter\Desktop\ScriptKek\Scripts" /E /Y /i /S /R</PreBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

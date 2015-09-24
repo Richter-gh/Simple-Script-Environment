@@ -1,6 +1,7 @@
 ﻿using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
+using System.Collections;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -86,12 +87,11 @@ namespace ScriptCore
             }
             catch (NullReferenceException e)
             {
-                MessageBox.Show(e.ToString());
+                //MessageBox.Show(e.ToString());
                 compiled = null;
             }
             if (compiled != null)
             {
-
                 if (!_scripts.Any(x => x.Script.Name.Equals(compiled.Name)))
                 {
                     _scripts.Add(
@@ -204,7 +204,7 @@ namespace ScriptCore
                 compilerParameters.ReferencedAssemblies.Add("ScriptCore.dll");
                 var asm = AppDomain.CurrentDomain.GetAssemblies().Where(x=>!x.IsDynamic).Select(x => x.Location).ToArray();
                 compilerParameters.ReferencedAssemblies.AddRange(asm);
-                
+               
                 CompilerResults compilerResults;
                 try
                 {

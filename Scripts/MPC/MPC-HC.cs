@@ -1,11 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Collections;
 using System.Diagnostics;
 using System.Globalization;
 using System.Windows.Forms;
 using System.Threading;
 using ScriptCore;
+using System.Reflection;
 //https://github.com/marcjoha/AudioSwitcher
+//https://github.com/Belphemur/AudioEndPointController
 // thanks to this project^
 namespace Scripts
 {
@@ -38,7 +40,6 @@ namespace Scripts
         private bool _mpcLaunched = false;
         private bool _boxShown = false;
         private bool _deviceChanged = false;
-        //public Form frm = new Form();//test later
         public void Execute()
         {
             bool mpc = (Process.GetProcessesByName("mpc-hc").Length > 0 ||
@@ -49,80 +50,76 @@ namespace Scripts
             }
             if (_mpcLaunched && !_boxShown && mpc)
             {
-                //device 1 - TV
-                //device 3 - speakers
+                
                 _boxShown = true;
-                //change default output device to TV
-                //frm.TopMost = true;
+                if(!_deviceChanged)
+                {
+                    Assembly asm = Assembly.LoadFrom(AppDomain.CurrentDomain.BaseDirectory + "Scripts\\MPC\\Audio.EndPoint.Controller.Wrapper.dll");
+                    var _AudioDeviceWrapper = asm.GetType("AudioEndPointControllerWrapper.AudioDeviceWrapper");
+                    var _AudioController = asm.GetType("AudioEndPointControllerWrapper.AudioController");
+                    //static
+                    var getAvailableAudioDevices = _AudioController.GetMethod("getAvailableAudioDevices");
+                    //not static
+                    var SetAsDefault = _AudioDeviceWrapper.GetMethod("SetAsDefault");
+                    var _audioDevices = getAvailableAudioDevices.Invoke(null, null);
+                    if (_audioDevices is IEnumerable)
+                    {
+                        foreach (var item in (_audioDevices as IEnumerable))
+                        {
+                            Type type = item.GetType();
+                            PropertyInfo info = type.GetProperty("FriendlyName");
+                            string value = (string)info.GetValue(item, null);
+                            if (value.Contains("PANASONIC"))
+                            {
+                                SetAsDefault.Invoke(item, null);
+                                _deviceChanged = true;
+                            }
+
+                        }
+                    }
+                }
+                /*
                 if (MessageBox.Show("Switch audio device to TV?","MPC lauched",MessageBoxButtons.YesNo) == DialogResult.Yes)
                 {
                     if (!_deviceChanged)
                     {
                         SelectDevice(1);
-                        _deviceChanged = true;
+                        
                     }
-                }
+                }*/
             }
             if (!mpc && _mpcLaunched)
             {
                 if (_deviceChanged)
                 {
-                    SelectDevice(3);
+                    Assembly asm = Assembly.LoadFrom(AppDomain.CurrentDomain.BaseDirectory + "Scripts\\MPC\\Audio.EndPoint.Controller.Wrapper.dll");
+                    var _AudioDeviceWrapper = asm.GetType("AudioEndPointControllerWrapper.AudioDeviceWrapper");
+                    var _AudioController = asm.GetType("AudioEndPointControllerWrapper.AudioController");
+                    //static
+                    var getAvailableAudioDevices = _AudioController.GetMethod("getAvailableAudioDevices");
+                    //not static
+                    var SetAsDefault = _AudioDeviceWrapper.GetMethod("SetAsDefault");
+                    var _audioDevices = getAvailableAudioDevices.Invoke(null, null);
+                    if (_audioDevices is IEnumerable)
+                    {
+                        foreach (var item in (_audioDevices as IEnumerable))
+                        {
+                            Type type = item.GetType();
+                            PropertyInfo info = type.GetProperty("FriendlyName");
+                            string value = (string)info.GetValue(item, null);
+                            if (value.Contains("Динамик"))
+                            {
+                                SetAsDefault.Invoke(item, null);
+                                _deviceChanged = false;
+                            }
+
+                        }
+                    }
                 }
                 _boxShown = false;
                 _mpcLaunched = false;
                 _deviceChanged = false;
             }
-        }
-
-        #region EndPointController.exe interaction
-
-        private static IEnumerable<Tuple<int, string, bool>> GetDevices()
-        {
-            var p = new Process
-            {
-                StartInfo =
-                                {
-                                    UseShellExecute = false,
-                                    RedirectStandardOutput = true,
-                                    CreateNoWindow = true,
-                                    FileName = AppDomain.CurrentDomain.BaseDirectory+"Scripts\\MPC\\EndPointController.exe",
-                                    Arguments = "-f \"%d|%ws|%d|%d\""
-                                }
-            };
-            p.Start();
-            Thread.Sleep(500);
-            p.WaitForExit();
-            var stdout = p.StandardOutput.ReadToEnd().Trim();
-            var devices = new List<Tuple<int, string, bool>>();
-
-            foreach (var line in stdout.Split('\n'))
-            {
-                var elems = line.Trim().Split('|');
-                var deviceInfo = new Tuple<int, string, bool>(int.Parse(elems[0]), elems[1], elems[3].Equals("1"));
-                devices.Add(deviceInfo);
-            }
-
-            return devices;
-        }
-
-        private static void SelectDevice(int id)
-        {
-            var p = new Process
-            {
-                StartInfo =
-                                {
-                                    UseShellExecute = false,
-                                    RedirectStandardOutput = true,
-                                    CreateNoWindow = true,
-                                    FileName = AppDomain.CurrentDomain.BaseDirectory+"Scripts\\MPC\\EndPointController.exe",
-                                    Arguments = id.ToString(CultureInfo.InvariantCulture)
-                                }
-            };
-            p.Start();
-            p.WaitForExit();
-        }
-
-        #endregion
+        }       
     }
 }

@@ -1,13 +1,28 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.23107.0
+VisualStudioVersion = 14.0.24720.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SSE", "SSE\SSE.csproj", "{B66C29A4-342D-41B3-A076-F01DA6D0B106}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScriptCore", "ScriptCore\ScriptCore.csproj", "{D6617CE2-3DA1-4148-A449-E298D4E9A4A0}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScriptCoreTests", "ScriptCoreTests\ScriptCoreTests.csproj", "{12763CED-EC46-47E4-A3EA-30DF64115301}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{7DEFF6BD-1EC1-4A61-AAD5-8EA217303871}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Scripts", "Scripts", "{0D565C73-D32E-4FC2-83AB-CAC639661F1E}"
+	ProjectSection(SolutionItems) = preProject
+		Scripts\SampleScript.cs = Scripts\SampleScript.cs
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MPC", "MPC", "{79527B06-CB62-4265-866B-6BC0FD1EBB8F}"
+	ProjectSection(SolutionItems) = preProject
+		Scripts\MPC\Audio.EndPoint.Controller.dll = Scripts\MPC\Audio.EndPoint.Controller.dll
+		Scripts\MPC\Audio.EndPoint.Controller.Wrapper.dll = Scripts\MPC\Audio.EndPoint.Controller.Wrapper.dll
+		Scripts\MPC\EndPointController.exe = Scripts\MPC\EndPointController.exe
+		Scripts\MPC\MPC-HC.cs = Scripts\MPC\MPC-HC.cs
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -30,5 +45,9 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{0D565C73-D32E-4FC2-83AB-CAC639661F1E} = {7DEFF6BD-1EC1-4A61-AAD5-8EA217303871}
+		{79527B06-CB62-4265-866B-6BC0FD1EBB8F} = {0D565C73-D32E-4FC2-83AB-CAC639661F1E}
 	EndGlobalSection
 EndGlobal

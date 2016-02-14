@@ -19,7 +19,9 @@ namespace ScriptCore
         internal IExecutable Script;
         public string FileName;
         public string ScriptName;
-        public bool Run;
+        public bool Enabled;
+        public Action Action;
+        public bool IsRunnable;
     }
 
     public class ScriptManager
@@ -75,6 +77,8 @@ namespace ScriptCore
         /// <returns>True if the script is successfully added to colelction.</returns>
         public bool Add(string file, bool run, out string message)
         {
+            Assembly asm = Assembly.LoadFrom(AppDomain.CurrentDomain.BaseDirectory+"ScriptCore.dll");
+            AppDomain.CurrentDomain.Load(asm.GetName());
             IExecutable compiled;
             string fileName;
             try { fileName = new FileInfo(file).Name; }
@@ -99,9 +103,12 @@ namespace ScriptCore
                         {
                             Script = compiled,
                             FileName = file,
-                            Run = run,
-                            ScriptName = compiled.Name
+                            Enabled = run,
+                            ScriptName = compiled.Name,
+                            IsRunnable = compiled.IsRunnable,
+                            Action = compiled.Action
                         });
+                    _scripts[_scripts.Count - 1].Script.OnLoad();
                     message = "";
                     return true;
                 }
@@ -142,19 +149,33 @@ namespace ScriptCore
             Parallel.ForEach<ExecutableScript>(_scripts, script =>
             {
                 try {
-                    if (script.Run)
-                        script.Script.Execute();
+                    if (script.Enabled)
+                        script.Script.Run();
                 }
                 catch(Exception e)
                 {
-                    script.Run = false;
+                    script.Enabled = false;
                     MessageBox.Show(e.ToString());
                 }
             });
             
         }
 
-        
+        public void Action(ExecutableScript scr)
+        {
+            try
+            {
+                if (scr.Enabled)
+                    scr.Script.Action();
+            }
+            catch (Exception e)
+            {
+                scr.Enabled = false;
+                MessageBox.Show(e.ToString());
+            }
+        }
+
+
         /// <summary>
         /// Compiles the assembly from file
         /// </summary>

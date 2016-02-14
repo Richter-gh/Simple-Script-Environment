@@ -2,17 +2,25 @@
 
 namespace Scripts
 {
-    internal class SampleScript : IExecutable
+    internal class SampleScript : ScriptBase,IExecutable
     {
-        public string Author
+        public override string Author
         {
             get
             {
-                return "SomeAuthor";
+                return "Me";
             }
         }
 
-        public string Name
+        public override bool IsRunnable
+        {
+            get
+            {
+                return true;
+            }
+        }
+
+        public override string Name
         {
             get
             {
@@ -20,7 +28,7 @@ namespace Scripts
             }
         }
 
-        public string Version
+        public override string Version
         {
             get
             {
@@ -28,10 +36,14 @@ namespace Scripts
             }
         }
 
-        public void Execute()
+        public override void Action()
         {
-            //kek
-            //Do something
+            
+        }
+        
+        public override void Run()
+        {
+            
         }
     }
 }

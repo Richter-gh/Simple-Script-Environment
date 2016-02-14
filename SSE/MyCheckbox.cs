@@ -11,4 +11,10 @@ namespace SSE
     {
         public ExecutableScript Script;
     }
+    class MyMenuItem:MenuItem
+    {
+        public ExecutableScript Script;
+        public MyMenuItem(string text, MenuItem[] items) : base(text, items)
+        { }
+    }
 }

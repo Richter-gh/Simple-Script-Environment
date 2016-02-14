@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Reflection;
+using System.Threading;
 using System.Windows.Forms;
 
 namespace SSE
@@ -12,8 +13,9 @@ namespace SSE
         [STAThread]
         private static void Main()
         {
-            Assembly asm = Assembly.LoadFrom(AppDomain.CurrentDomain.BaseDirectory+"ScriptCore.dll");
-            AppDomain.CurrentDomain.Load(asm.GetName());
+            //Assembly asm = Assembly.LoadFrom(AppDomain.CurrentDomain.BaseDirectory+"ScriptCore.dll");
+            //AppDomain.CurrentDomain.Load(asm.GetName());
+            //Thread.Sleep(10000);
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new MainForm());

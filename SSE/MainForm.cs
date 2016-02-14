@@ -50,6 +50,7 @@ namespace SSE
             }
             foreach (var item in _sm.Scripts)
             {
+                var a = new MenuItem[] { };
                 var box = new MyCheckBox();
                 box.Tag = item.ScriptName;
                 box.Text = item.ScriptName;
@@ -57,6 +58,14 @@ namespace SSE
                 box.Checked = true;
                 box.AutoSize = true;
                 box.CheckedChanged += OnCheckedChanged;
+                var myMenuItem = new MyMenuItem(item.ScriptName, new MenuItem[]
+                    {
+                        new MenuItem(item.Enabled?"Disable":"Enable", new EventHandler(trayScriptEnableClick)),
+                        new MenuItem("Action", new EventHandler(trayScriptActionClick))
+                    });
+                myMenuItem.Script = item;                  
+                    _trayIcon.ContextMenu.MenuItems.Add(myMenuItem);
+                
                 AddToPanel(box);
             }
             _timer.Interval = 1000;
@@ -154,7 +163,7 @@ namespace SSE
                 box.Tag = item.ScriptName;
                 box.Text = item.ScriptName;
                 box.Script = item;
-                box.Checked = item.Run;
+                box.Checked = item.Enabled;
                 box.AutoSize = true;
                 box.CheckedChanged += OnCheckedChanged;
                 AddToPanel(box);
@@ -166,10 +175,10 @@ namespace SSE
         /// </summary>
         private void RefreshPanel()
         {
-            panel1.Controls.Clear();
+            //panel1.Controls.Clear();
             foreach (MyCheckBox item in panel1.Controls)
             {
-                item.Script.Run = item.Checked;
+                item.Checked = item.Script.Enabled;
             }
         }
 
@@ -197,9 +206,46 @@ namespace SSE
 
         private void trayOpenClick(object sender, EventArgs e)
         {
+            if (this.WindowState != FormWindowState.Normal)
+            {
+                this.Show();
+                this.ShowInTaskbar = true;
+                this.WindowState = FormWindowState.Normal;
+            }
+            else
+            {
+                this.WindowState = FormWindowState.Minimized;
+                this.Hide();
+                this.ShowInTaskbar = false;
+            }
+        }
+        private void trayScriptEnableClick(object sender, EventArgs e)
+        {
+            var menuItem = (MenuItem)sender;
+            var itemParent = (MyMenuItem)menuItem.Parent;
+
+            if (itemParent.Script.Enabled)
+            {
+                itemParent.Script.Enabled = false;
+                menuItem.Text = "Enable";                
+            }
+            else
+            {
+                itemParent.Script.Enabled = true;
+                menuItem.Text = "Disable";
+            }
+            //sot he form won't hide itself
+            //this is retarded
             this.Show();
             this.ShowInTaskbar = true;
             this.WindowState = FormWindowState.Normal;
+            RefreshPanel();
+        }
+        private void trayScriptActionClick(object sender, EventArgs e)
+        {
+            var menuItem = (MenuItem)sender;
+            var itemParent = (MyMenuItem)menuItem.Parent;
+            itemParent.Script.Action();
         }
 
         private void TickEvent(object sender, EventArgs e)
@@ -210,11 +256,13 @@ namespace SSE
         private void OnCheckedChanged(object sender, EventArgs e)
         {
             MyCheckBox box = (MyCheckBox)sender;
+            box.Script.Enabled = box.Checked;
+            box.Refresh();/*
             foreach (var item in _checkBoxList)
             {
                 if (item.Script.FileName == box.Script.FileName)
                 {
-                    item.Script.Run = box.Checked;
+                    item.Script.Enabled = box.Checked;
                 }
                 item.Refresh();
             }
@@ -222,10 +270,10 @@ namespace SSE
             {
                 if (item.FileName == box.Script.FileName)
                 {
-                    item.Run = box.Checked;
+                    item.Enabled = box.Checked;
                 }
             }
-            //RefreshPanel();
+            //RefreshPanel();*/
         }
 
         #endregion
@@ -238,16 +286,16 @@ namespace SSE
         /// <param name="isChecked"></param>
         public static void RegisterInStartup(bool isChecked)
         {
-            RegistryKey registryKey = Registry.CurrentUser.OpenSubKey
+            /*RegistryKey registryKey = Registry.CurrentUser.OpenSubKey
                     ("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
             if (isChecked)
             {
-                registryKey.SetValue("ApplicationName", Application.ExecutablePath);
+                registryKey.SetValue("SSE", Application.ExecutablePath);
             }
             else
             {
-                registryKey.DeleteValue("ApplicationName");
-            }
+                registryKey.DeleteValue("SSE");
+            }*/
         }
 
         private void LoadSettings(MySettings settings)

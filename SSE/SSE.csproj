@@ -149,12 +149,12 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>cp -f "$(ProjectDir)bin\Release\SSE.exe" "C:\Users\Richter\Desktop\ScriptKek\SSE.exe"
-cp -f "$(ProjectDir)bin\Release\ScriptCore.dll" "C:\Users\Richter\Desktop\ScriptKek\ScriptCore.dll"</PostBuildEvent>
+    <PostBuildEvent>c:\windows\system32\xcopy "$(ProjectDir)bin\Release\SSE.exe" "C:\Users\Richter\Desktop\ScriptKek" /Y
+c:\windows\system32\xcopy "$(ProjectDir)bin\Release\*.dll" "C:\Users\Richter\Desktop\ScriptKek" /Y</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
-    <PreBuildEvent>xcopy "$(SolutionDir)Scripts" "$(TargetDir)Scripts" /E /Y /i /S /R
-xcopy "$(SolutionDir)Scripts" "C:\Users\Richter\Desktop\ScriptKek\Scripts" /E /Y /i /S /R</PreBuildEvent>
+    <PreBuildEvent>c:\windows\system32\xcopy "$(SolutionDir)Scripts" "$(TargetDir)Scripts" /E /Y /i /S /R
+c:\windows\system32\xcopy "$(SolutionDir)Scripts" "C:\Users\Richter\Desktop\ScriptKek\Scripts" /E /Y /i /S /R</PreBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

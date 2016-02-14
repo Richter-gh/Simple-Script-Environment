@@ -5,7 +5,9 @@
         string Author { get; }
         string Name { get; }
         string Version { get; }
-
-        void Execute();
+        bool IsRunnable { get; }
+        void Action();
+        void OnLoad();       
+        void Run();
     }
 }

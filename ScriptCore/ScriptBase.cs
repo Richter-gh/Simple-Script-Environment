@@ -8,27 +8,17 @@
         public abstract string Name { get; }
         public virtual string Version { get { return "0"; } }
 
-        #endregion
+        public abstract bool IsRunnable { get; }
 
-        #region Constructors
+        #endregion       
 
-        public ScriptBase()
-        {           
-        }
-
-        #endregion
-
-        #region Methods
-
-        public virtual void OnLoad()
-        {
-        }
-
+        #region Methods    
+        public virtual void OnLoad() { }
         /// <summary>
         /// Mandatory function for scripts.
         /// Is called by ScriptManager if script is set to run
         /// </summary>
-        public abstract void Execute();
+        public abstract void Run();
 
         #endregion
 
@@ -37,7 +27,9 @@
         {
             return string.Format("Name: {1}, Author: {0}, Version: {2}", Author, Name, Version);
         }
-        
+
+        public abstract void Action();
+
         #endregion
     }
 }

@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using Microsoft.Win32;
 using ScriptCore;
@@ -19,9 +21,10 @@ namespace SSE
         private MySettings Settings;
         private ScriptManager _sm;
         private List<MyCheckBox> _checkBoxList;
-        private Timer _timer;
         private NotifyIcon _trayIcon;
         private string _scriptsFolder = AppDomain.CurrentDomain.BaseDirectory + "Scripts\\";
+        private Task mainLoop;
+        private CancellationTokenSource token;
         #endregion
 
         #region Form Events
@@ -33,9 +36,7 @@ namespace SSE
             _trayIcon.ContextMenu.MenuItems.Add(new MenuItem("Exit", new EventHandler(trayExitClick)));
             _trayIcon.Click += trayOpenClick;
             _trayIcon.Visible = true;
-            _trayIcon.Icon = this.Icon;
-            _timer = new Timer();
-            _timer.Tick += TickEvent;
+            _trayIcon.Icon = this.Icon;            
             _sm = new ScriptManager();
             _checkBoxList = new List<MyCheckBox>();
             if (!Directory.Exists(_scriptsFolder))
@@ -68,8 +69,6 @@ namespace SSE
                 
                 AddToPanel(box);
             }
-            _timer.Interval = 1000;
-            _timer.Start();
 
             LoadSettings(null);
 
@@ -77,8 +76,31 @@ namespace SSE
                 this.WindowState = FormWindowState.Minimized;
 
             RepopulatePanel();
-            //if(Settings.runOnWinStart)
-            //kek
+
+            StartLoop();
+        }
+
+        private void StartLoop()
+        {
+            token = new CancellationTokenSource();
+            var canellationToken = token.Token;
+            mainLoop = Task.Factory.StartNew(() =>
+            {
+                canellationToken.ThrowIfCancellationRequested();
+                _sm.Execute();
+                Thread.Sleep(50);
+            }, canellationToken);
+        }
+
+        private void StopLoop()
+        {
+            token.Cancel();
+            try
+            {
+                mainLoop.Wait();
+            }
+            catch (AggregateException)
+            { }
         }
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
@@ -246,11 +268,6 @@ namespace SSE
             var menuItem = (MenuItem)sender;
             var itemParent = (MyMenuItem)menuItem.Parent;
             itemParent.Script.Action();
-        }
-
-        private void TickEvent(object sender, EventArgs e)
-        {
-            _sm.Execute();
         }
 
         private void OnCheckedChanged(object sender, EventArgs e)

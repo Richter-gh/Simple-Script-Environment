@@ -14,6 +14,7 @@
 
         #region Methods    
         public virtual void OnLoad() { }
+        public virtual void OnDisable() { }
         /// <summary>
         /// Mandatory function for scripts.
         /// Is called by ScriptManager if script is set to run

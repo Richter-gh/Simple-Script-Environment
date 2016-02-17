@@ -7,7 +7,8 @@
         string Version { get; }
         bool IsRunnable { get; }
         void Action();
-        void OnLoad();       
+        void OnLoad();
+        void OnDisable();    
         void Run();
     }
 }

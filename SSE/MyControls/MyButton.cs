@@ -1,10 +1,36 @@
-﻿using System.Windows.Forms;
+﻿using System;
+using System.Windows.Forms;
 using ScriptCore;
+using SSE.EventArguments;
 
-namespace SSE
+namespace SSE.MyControls
 {
-    class MyButton : Button
+    public class MyButton : Button, IScriptControl
     {
-        public ExecutableScript Script;
+        private ExecutableScript _script;
+        public ExecutableScript Script
+        {
+            get
+            {
+                return _script;
+            }
+
+            set
+            {
+                _script = value;
+            }
+        }
+        public new EventHandler<ScriptEventArgs> Click;
+        protected override void OnClick(EventArgs e)
+        {
+            base.OnClick(e);
+
+            if (Click != null)
+            {
+                var handler = Click;
+                if (handler != null)
+                    handler(this, new ScriptEventArgs { Script = _script });
+            }
+        }
     }
 }

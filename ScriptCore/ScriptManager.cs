@@ -44,7 +44,7 @@ namespace ScriptCore
         public ScriptManager(IDictionary<string, bool> scripts)
         {
             _scripts = new List<ExecutableScript>();
-            string messages = "";
+            var messages = "";
             foreach (var elem in scripts)
             {
                 string temp;
@@ -77,7 +77,7 @@ namespace ScriptCore
         /// <returns>True if the script is successfully added to colelction.</returns>
         public bool Add(string file, bool run, out string message)
         {
-            Assembly asm = Assembly.LoadFrom(AppDomain.CurrentDomain.BaseDirectory+"ScriptCore.dll");
+            var asm = Assembly.LoadFrom(AppDomain.CurrentDomain.BaseDirectory+"ScriptCore.dll");
             AppDomain.CurrentDomain.Load(asm.GetName());
             IExecutable compiled;
             string fileName;
@@ -89,9 +89,8 @@ namespace ScriptCore
                             where type.GetInterfaces().Contains(typeof(IExecutable))
                             select (IExecutable)Activator.CreateInstance(type)).SingleOrDefault();
             }
-            catch (NullReferenceException e)
+            catch (NullReferenceException)
             {
-                //MessageBox.Show(e.ToString());
                 compiled = null;
             }
             if (compiled != null)

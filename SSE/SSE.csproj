@@ -76,6 +76,9 @@
     <Compile Include="GUI\MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Interfaces\IMainView.cs" />
+    <Compile Include="Interfaces\IView.cs" />
+    <Compile Include="MyControls\IScriptControl.cs" />
     <Compile Include="MyControls\MyCheckbox.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -85,6 +88,8 @@
     <Compile Include="MyControls\MyMenuItem.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Presenter\MainPresenter.cs" />
+    <Compile Include="EventArguments\ScriptEventArgs.cs" />
     <Compile Include="Settings\MySettings.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

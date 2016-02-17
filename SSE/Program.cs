@@ -2,6 +2,7 @@
 using System.Reflection;
 using System.Threading;
 using System.Windows.Forms;
+using SSE.Presenter;
 
 namespace SSE
 {
@@ -16,9 +17,12 @@ namespace SSE
             //Assembly asm = Assembly.LoadFrom(AppDomain.CurrentDomain.BaseDirectory+"ScriptCore.dll");
             //AppDomain.CurrentDomain.Load(asm.GetName());
             //Thread.Sleep(10000);
+
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new MainForm());
+            var view = new MainForm();
+            var presenter = new MainPresenter(view);
+            Application.Run(view);
         }
     }
 }

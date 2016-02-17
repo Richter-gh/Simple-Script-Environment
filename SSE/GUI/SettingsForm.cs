@@ -13,7 +13,7 @@ namespace SSE
             InitializeComponent();
         }
 
-        private void SettingsOk_Click(object sender, EventArgs e)
+        private void SettingsOk_Click(object sender, System.EventArgs e)
         {
             settings.minimizedStart = MinimizedStartCheckbox.Checked;
             settings.runOnWinStart = AutostartCheckBox.Checked;
@@ -27,7 +27,7 @@ namespace SSE
             return settings;
         }
 
-        private void SettingsForm_Load(object sender, EventArgs e)
+        private void SettingsForm_Load(object sender, System.EventArgs e)
         {
             if(settings==null)
                 settings = MySettings.Load();
@@ -35,9 +35,9 @@ namespace SSE
             AutostartCheckBox.Checked = settings.runOnWinStart;
         }
 
-        private void AutostartCheckBox_CheckedChanged(object sender, EventArgs e)
+        private void AutostartCheckBox_CheckedChanged(object sender, System.EventArgs e)
         {
-            MainForm.RegisterInStartup(AutostartCheckBox.Checked);
+            //MainForm.RegisterInStartup(AutostartCheckBox.Checked);
         }
     }
 }

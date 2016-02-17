@@ -84,6 +84,7 @@ namespace SSE
         public event EventHandler AddFolderToolstripClick;
         public event EventHandler AddFileToolstripClick;
         public event EventHandler FormLoad;
+        public event EventHandler FormStop;
 
 
         #endregion
@@ -117,8 +118,8 @@ namespace SSE
         }
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            //RegisterInStartup(Settings.runOnWinStart);
-            _trayIcon.Visible = false;
+            if (FormStop != null)
+                FormStop(this, EventArgs.Empty);
         }
 
         private void MainForm_Resize(object sender, System.EventArgs e)
@@ -205,10 +206,7 @@ namespace SSE
             ScriptPanel.Controls.Add(button);
             _checkBoxList.Add(box);            
             ScriptPanel.Controls.Add(box);
-        }       
-        
-        #endregion
-        
+        }
 
         private void trayExitClick(object sender, System.EventArgs e)
         {
@@ -230,9 +228,8 @@ namespace SSE
                 this.ShowInTaskbar = false;
             }
         }
-        private void MainForm_FormClosed(object sender, FormClosedEventArgs e)
-        {
+        #endregion
 
-        }
+
     }
 }

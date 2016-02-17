@@ -79,6 +79,9 @@
     <Compile Include="MyControls\MyCheckbox.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="MyControls\MyButton.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="MyControls\MyMenuItem.cs">
       <SubType>Component</SubType>
     </Compile>

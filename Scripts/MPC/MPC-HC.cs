@@ -62,6 +62,8 @@ namespace Scripts
             {
                 SwitchDevice("Динамик");
                 _deviceChanged = false;
+                _boxShown = false;
+                _mpcLaunched = false;
             }
         }
         public override void OnLoad()
@@ -75,6 +77,10 @@ namespace Scripts
             SetAsDefault = _AudioDeviceWrapper.GetMethod("SetAsDefault");
             _audioDevices = GetAvailableAudioDevices.Invoke(null, null);
         }
+        public override void OnDisable()
+        {
+            Action();
+        }
         public override void Run()
         {
             bool mpc = (Process.GetProcessesByName("mpc-hc").Length > 0 ||
@@ -83,7 +89,7 @@ namespace Scripts
             {
                 _mpcLaunched = true;
             }
-            if (_mpcLaunched && !_boxShown && mpc)
+            if (_mpcLaunched && mpc)
             {
                 _boxShown = true;                
                 if (!_deviceChanged)

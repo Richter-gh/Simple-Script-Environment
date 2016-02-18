@@ -97,7 +97,7 @@ namespace SSE
             _trayIcon.Text = "Simple Script Environment";
             _trayIcon.ContextMenu = new ContextMenu();
             _trayIcon.ContextMenu.MenuItems.Add(new MenuItem("Exit", new EventHandler(trayExitClick)));
-            _trayIcon.Click += trayOpenClick;
+            _trayIcon.MouseClick += trayOpenClick;
             _trayIcon.Visible = true;
             _trayIcon.Icon = this.Icon;
 
@@ -177,11 +177,7 @@ namespace SSE
             else
                 this.Settings = settings;
         }
-        public void FormShow()
-        {
-            this.Show();
-            this.WindowState = FormWindowState.Normal;
-        }
+
         #region Panel Management
 
         /// <summary>
@@ -213,19 +209,23 @@ namespace SSE
             this.Close();
         }
 
-        private void trayOpenClick(object sender, System.EventArgs e)
+        private void trayOpenClick(object sender, MouseEventArgs e)
         {
-            if (this.WindowState != FormWindowState.Normal)
+            //so the form won't hide itself on rightclick everytime
+            if (e.Button == MouseButtons.Left)
             {
-                this.Show();
-                this.ShowInTaskbar = true;
-                this.WindowState = FormWindowState.Normal;
-            }
-            else
-            {
-                this.WindowState = FormWindowState.Minimized;
-                this.Hide();
-                this.ShowInTaskbar = false;
+                if (this.WindowState != FormWindowState.Normal)
+                {
+                    this.Show();
+                    this.ShowInTaskbar = true;
+                    this.WindowState = FormWindowState.Normal;
+                }
+                else
+                {
+                    this.WindowState = FormWindowState.Minimized;
+                    this.Hide();
+                    this.ShowInTaskbar = false;
+                }
             }
         }
         #endregion

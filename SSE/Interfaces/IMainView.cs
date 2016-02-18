@@ -26,7 +26,6 @@ namespace SSE.Interfaces
         string ScriptsFolder { get; }
 
         void AddScriptControlsToPanel(MyCheckBox box, MyButton button);
-
-        void FormShow();
+        
     }
 }

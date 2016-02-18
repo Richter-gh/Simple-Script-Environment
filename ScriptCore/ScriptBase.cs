@@ -10,14 +10,20 @@
 
         public abstract bool IsRunnable { get; }
 
-        #endregion       
+        #endregion
 
-        #region Methods    
+        #region Methods  
+
+        /// <summary>
+        /// Called once when script is compiled successfully and added tot he list
+        /// </summary>
         public virtual void OnLoad() { }
+        /// <summary>
+        /// Not yet implemented
+        /// </summary>
         public virtual void OnDisable() { }
         /// <summary>
-        /// Mandatory function for scripts.
-        /// Is called by ScriptManager if script is set to run
+        /// Is called by ScriptManager in an endless loop if IsRunnable is true
         /// </summary>
         public abstract void Run();
 
@@ -29,6 +35,9 @@
             return string.Format("Name: {1}, Author: {0}, Version: {2}", Author, Name, Version);
         }
 
+        /// <summary>
+        /// This is called when the action button is pressed
+        /// </summary>
         public abstract void Action();
 
         #endregion

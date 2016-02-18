@@ -69,10 +69,10 @@ namespace ScriptCore
         #region Methods
 
         /// <summary>
-        /// Adds the script in file to the collection if it compiles.
+        /// Adds the script from file or text to the collection if it compiles.
         /// </summary>
-        /// <param name="file">Path to file win the script.</param>
-        /// <param name="run">True if script should be executed.</param>
+        /// <param name="file">Path to file win the script OR the script itself.</param>
+        /// <param name="run">True if script should be executed in a loop.</param>
         /// <param name="message">Contains error message or an empty string</param>
         /// <returns>True if the script is successfully added to colelction.</returns>
         public bool Add(string file, bool run, out string message)

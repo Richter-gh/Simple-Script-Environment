@@ -12,30 +12,35 @@ namespace ScriptCore.Tests
         private string _correctCode = @"
 using ScriptCore;
 namespace ScriptCore.Tests{
-    public class Test:IExecutable
+    public class Test:ScriptBase,IExecutable
     {
-        public string Author { get {return " + "\"" + "SomeAuthor" + "\"" + @";} }
-        public string Name { get {return " + "\"" + "SomeAuthor" + "\"" + @";} }
-        public string Version { get {return " + "\"" + "SomeAuthor" + "\"" + @";} }
-        public void Execute()
-        {}
+        public override string Author { get {return " + "\"" + "SomeAuthor" + "\"" + @";} }
+        public override string Name { get {return " + "\"" + "SomeAuthor" + "\"" + @";} }
+        public override string Version { get {return " + "\"" + "SomeAuthor" + "\"" + @";} }
+        public override bool IsRunnable {get {return true;}}
+        public override void Run(){}
+        public override void OnLoad(){}
+        public override void OnDisable(){}
+        public override void Action(){}
+
     }}";
                 
         private string _incorrectCode = @"
 namespace ScriptCore.Tests{
-    public class Test
+    public class Test:ScriptBase,IExecutable
     {
-        public string Author { get {return " + "\"" + "SomeAuthor" + "\"" + @";} }
-        public string Name { get {return " + "\"" + "SomeAuthor" + "\"" + @";} }
-        public string Version { get {return " + "\"" + "SomeAuthor" + "\"" + @";} }
-        public void Execute()
-        {}
+        public override string Author { get {return " + "\"" + "SomeAuthor" + "\"" + @";} }
+        public override string Name { get {return " + "\"" + "SomeAuthor" + "\"" + @";} }
+        public override string Version { get {return " + "\"" + "SomeAuthor" + "\"" + @";} }
+        public override bool IsRunnable {get {return true;}}
+        public override void OnLoad(){}
+        public override void OnDisable(){}
+        public override void Action(){}
     }}
 ";
         #endregion
 
         [TestMethod]
-       // [ExpectedException(typeof(NullReferenceException))]
         public void ScriptManagerTest_1()
         {
             var dic = new Dictionary<string, bool>()

@@ -77,7 +77,7 @@ namespace ScriptCore
         /// <returns>True if the script is successfully added to colelction.</returns>
         public bool Add(string file, bool run, out string message)
         {
-            var asm = Assembly.LoadFrom(AppDomain.CurrentDomain.BaseDirectory+"ScriptCore.dll");
+            var asm = Assembly.LoadFrom(AppDomain.CurrentDomain.BaseDirectory+"\\ScriptCore.dll");
             AppDomain.CurrentDomain.Load(asm.GetName());
             IExecutable compiled;
             string fileName;

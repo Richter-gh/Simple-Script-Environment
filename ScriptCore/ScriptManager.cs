@@ -1,16 +1,12 @@
 ﻿using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
-using System.Collections;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text.RegularExpressions;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Microsoft.CSharp;
 
 namespace ScriptCore
 {
@@ -23,8 +19,15 @@ namespace ScriptCore
         public Action Action;
         public bool IsRunnable;
     }
-
-    public class ScriptManager
+    public interface IScriptManager
+    {
+        List<ExecutableScript> Scripts { get; }
+        bool Add(string file, bool run, out string message);
+        bool Remove(string file);
+        void Execute();
+        void Action(ExecutableScript scr);
+    }
+    public class ScriptManager:IScriptManager
     {
         #region Properties
 

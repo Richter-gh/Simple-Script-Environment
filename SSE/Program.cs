@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Reflection;
-using System.Threading;
 using System.Windows.Forms;
 using SSE.Presenter;
 
@@ -14,14 +12,11 @@ namespace SSE
         [STAThread]
         private static void Main()
         {
-            //Assembly asm = Assembly.LoadFrom(AppDomain.CurrentDomain.BaseDirectory+"ScriptCore.dll");
-            //AppDomain.CurrentDomain.Load(asm.GetName());
-            //Thread.Sleep(10000);
-
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             var view = new MainForm();
-            var presenter = new MainPresenter(view);
+            ScriptCore.IScriptManager sm = new ScriptCore.ScriptManager();
+            var presenter = new MainPresenter(view,sm);
             Application.Run(view);
         }
     }

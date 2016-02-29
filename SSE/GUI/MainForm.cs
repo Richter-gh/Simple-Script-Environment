@@ -104,7 +104,6 @@ namespace SSE
             _trayIcon = new NotifyIcon();
             _trayIcon.Text = "Simple Script Environment";
             _trayIcon.ContextMenu = new ContextMenu();
-            _trayIcon.ContextMenu.MenuItems.Add(new MenuItem("Exit", new EventHandler(trayExitClick)));
             _trayIcon.MouseClick += trayOpenClick;
             _trayIcon.Visible = true;
             _trayIcon.Icon = this.Icon;
@@ -119,10 +118,12 @@ namespace SSE
                 this.WindowState = FormWindowState.Minimized;
             if (FormLoad != null)
             {
-                var handler = FormLoad;
-                if (handler != null)
-                    handler(this, EventArgs.Empty);
+                if (FormLoad != null)
+                    FormLoad(this, EventArgs.Empty);
             }
+            this.ShowInTaskbar = true;
+
+            _trayIcon.ContextMenu.MenuItems.Add(new MenuItem("Exit", new EventHandler(trayExitClick)));
         }
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
@@ -134,8 +135,8 @@ namespace SSE
         {
             if (WindowState == FormWindowState.Minimized)
             {
-                this.Hide();
-                this.ShowInTaskbar = false;
+                //this.Hide();
+                //this.ShowInTaskbar = true;
             }
         }
 
@@ -227,14 +228,13 @@ namespace SSE
                 if (this.WindowState != FormWindowState.Normal)
                 {
                     this.Show();
-                    this.ShowInTaskbar = true;
+                    //this.ShowInTaskbar = true;
                     this.WindowState = FormWindowState.Normal;
                 }
                 else
                 {
                     this.WindowState = FormWindowState.Minimized;
                     this.Hide();
-                    this.ShowInTaskbar = false;
                 }
             }
         }

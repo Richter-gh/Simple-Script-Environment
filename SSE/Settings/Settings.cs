@@ -17,6 +17,13 @@ namespace SSE.Settings
             File.WriteAllText(fileName, (new JavaScriptSerializer()).Serialize(pSettings));
         }
 
+        /*public void Load(this T settings,string fileName = DEFAULT_FILENAME)
+        {
+            T t = new T();
+            if (File.Exists(fileName))
+                t = (new JavaScriptSerializer()).Deserialize<T>(File.ReadAllText(fileName));
+            settings = t;
+        }*/
         public static T Load(string fileName = DEFAULT_FILENAME)
         {
             T t = new T();

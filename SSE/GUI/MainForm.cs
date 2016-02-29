@@ -23,7 +23,14 @@ namespace SSE
 
         #region Properties
 
-        private MySettings Settings;
+        public MySettings LeSettings
+        {
+            get
+            {
+                return _settings;
+            }            
+        }
+        private MySettings _settings;
         private Panel _scriptPanel;
         private List<MyCheckBox> _checkBoxList;
         private List<MyButton> _actionButtonList;
@@ -83,6 +90,7 @@ namespace SSE
         public event EventHandler<ScriptEventArgs> ScriptPanelActionClick;
         public event EventHandler AddFolderToolstripClick;
         public event EventHandler AddFileToolstripClick;
+        public event EventHandler SettingsWindowClosed;
         public event EventHandler FormLoad;
         public event EventHandler FormStop;
 
@@ -107,7 +115,7 @@ namespace SSE
                 Directory.CreateDirectory(_scriptsFolder);
             LoadSettings(null);
 
-            if (Settings.minimizedStart)
+            if (LeSettings.minimizedStart)
                 this.WindowState = FormWindowState.Minimized;
             if (FormLoad != null)
             {
@@ -149,10 +157,12 @@ namespace SSE
         private void settingsToolStripMenuItem_Click(object sender, System.EventArgs e)
         {
             var stfrm = new SettingsForm();
-            stfrm.settings = this.Settings;
+            stfrm.settings = this.LeSettings;
             if (stfrm.ShowDialog() == DialogResult.OK)
             {
                 var settings = stfrm.GetSettings();
+                if (SettingsWindowClosed != null)
+                    SettingsWindowClosed(this, new SettingsEventArgs { Settings = settings });
                 LoadSettings(settings);
             }
         }
@@ -173,9 +183,9 @@ namespace SSE
         private void LoadSettings(MySettings settings)
         {
             if (settings == null)
-                this.Settings = MySettings.Load();
+                this._settings = MySettings.Load();
             else
-                this.Settings = settings;
+                this._settings = settings;
         }
 
         #region Panel Management

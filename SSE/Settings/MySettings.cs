@@ -10,5 +10,6 @@ namespace SSE
     {
         public bool minimizedStart;
         public bool runOnWinStart;
+        public Dictionary<string, bool> ScriptStatus;
     }
 }

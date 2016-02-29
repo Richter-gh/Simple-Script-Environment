@@ -3,6 +3,7 @@ using SSE.MyControls;
 using SSE.EventArguments;
 using ScriptCore;
 using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.IO;
@@ -46,6 +47,23 @@ namespace SSE.Presenter
             {
                 AddScript(directory, true);
             }
+            //load script status from json
+            if (_mainForm.LeSettings.ScriptStatus != null)
+            {
+                foreach(string key in _mainForm.LeSettings.ScriptStatus.Keys)
+                {
+                    var tempScript = _sm.Scripts.FirstOrDefault(z => z.ScriptName == key);
+                    tempScript.Enabled = _mainForm.LeSettings.ScriptStatus[key];
+                }
+            }
+            else
+            {
+                _mainForm.LeSettings.ScriptStatus = new System.Collections.Generic.Dictionary<string, bool>();
+                foreach (ExecutableScript scriptName in _sm.Scripts)
+                {
+                    _mainForm.LeSettings.ScriptStatus.Add(scriptName.ScriptName, true);
+                }
+            }
             foreach (var item in _sm.Scripts)
             {
                 var a = new MenuItem[] { };
@@ -86,6 +104,7 @@ namespace SSE.Presenter
         private void _mainForm_FormClosing(object sender, EventArgs e)
         {
             StopLoop();
+            _mainForm.LeSettings.Save();
         }
         private void _mainForm_AddFolderToolstripClick(object sender, EventArgs e)
         {
@@ -142,6 +161,7 @@ namespace SSE.Presenter
             var box = (MyCheckBox)sender;
             var script = box.Script;
             script.Enabled = box.Checked;
+            _mainForm.LeSettings.ScriptStatus[script.ScriptName] = false;
             box.Refresh();
         }
         private void _mainForm_ScriptPanelActionClick(object sender, ScriptEventArgs e)

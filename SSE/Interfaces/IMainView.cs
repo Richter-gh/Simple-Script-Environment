@@ -13,6 +13,7 @@ namespace SSE.Interfaces
         event EventHandler<ScriptEventArgs> ScriptPanelActionClick;
         event EventHandler AddFolderToolstripClick;
         event EventHandler AddFileToolstripClick;
+        event EventHandler SettingsWindowClosed;
         Panel ScriptPanel { get; }
 
         NotifyIcon TrayIcon { get; }
@@ -27,5 +28,6 @@ namespace SSE.Interfaces
 
         void AddScriptControlsToPanel(MyCheckBox box, MyButton button);
         
+        MySettings LeSettings { get;}
     }
 }

@@ -105,6 +105,7 @@ namespace SSE.Presenter
         {
             StopLoop();
             _mainForm.LeSettings.Save();
+            //MessageBox.Show(string.Format("0:{0} 1:{1} 2:{3}", GC.CollectionCount(2)));
         }
         private void _mainForm_AddFolderToolstripClick(object sender, EventArgs e)
         {
@@ -139,6 +140,7 @@ namespace SSE.Presenter
                 e.Script.Enabled = true;
                 menuItem.Text = "Disable";
             }
+            _mainForm.LeSettings.ScriptStatus[e.Script.ScriptName] = e.Script.Enabled;
             RefreshPanel();
         }
         private void _mainForm_TrayScriptActionClick(object sender, ScriptEventArgs e)
@@ -161,7 +163,7 @@ namespace SSE.Presenter
             var box = (MyCheckBox)sender;
             var script = box.Script;
             script.Enabled = box.Checked;
-            _mainForm.LeSettings.ScriptStatus[script.ScriptName] = false;
+            _mainForm.LeSettings.ScriptStatus[script.ScriptName] = box.Checked;
             box.Refresh();
         }
         private void _mainForm_ScriptPanelActionClick(object sender, ScriptEventArgs e)

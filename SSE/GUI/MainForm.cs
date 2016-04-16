@@ -127,8 +127,7 @@ namespace SSE
         }
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if (FormStop != null)
-                FormStop(this, EventArgs.Empty);
+            
         }
 
         private void MainForm_Resize(object sender, System.EventArgs e)
@@ -238,8 +237,13 @@ namespace SSE
                 }
             }
         }
+
         #endregion
 
-
+        private void MainForm_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            if (FormStop != null)
+                FormStop(this, EventArgs.Empty);
+        }
     }
 }
